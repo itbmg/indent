@@ -1510,17 +1510,6 @@
                         {
                             getOrderValue.Desciption = "Ltrs";
                         }
-                        else
-                        {
-                            if (dr["Units"].ToString() == "Nos")
-                            {
-                                getOrderValue.Desciption = "Nos";
-                            }
-                            else
-                            {
-                                getOrderValue.Desciption = "Kgs";
-                            }
-                        }
                         getOrderValue.Units = dr["Units"].ToString();
                         getOrderValue.Unitqty = dr["Qty"].ToString();
                         string AgentUnitPrice = dr["Aunitprice"].ToString();
@@ -6118,17 +6107,7 @@
                     {
                         GetProduct.Desciption = "Ltrs";
                     }
-                    else
-                    {
-                        if (dtProduct.Rows[0]["Units"].ToString() == "Nos")
-                        {
-                            GetProduct.Desciption = "Nos";
-                        }
-                        else
-                        {
-                            GetProduct.Desciption = "Kgs";
-                        }
-                    }
+                   
                     //getOrderValue.Rate = (float)Rate;
                     GetProduct.orderunitRate = (float)TotalRate;
                     ProductList.Add(GetProduct);
@@ -6163,17 +6142,6 @@
                     if (dtBranchProduct.Rows[0]["Units"].ToString() == "ml" || dtBranchProduct.Rows[0]["Units"].ToString() == "ltr")
                     {
                         GetProduct.Desciption = "Ltrs";
-                    }
-                    else
-                    {
-                        if (dtBranchProduct.Rows[0]["Units"].ToString() == "Nos")
-                        {
-                            GetProduct.Desciption = "Nos";
-                        }
-                        else
-                        {
-                            GetProduct.Desciption = "Kgs";
-                        }
                     }
                     //getOrderValue.Rate = (float)Rate;
                     GetProduct.orderunitRate = (float)TotalRate;
@@ -8408,17 +8376,6 @@
                                     {
                                         getOrderValue.Desciption = "Ltrs";
                                     }
-                                    else
-                                    {
-                                        if (drbrnchprdt["Units"].ToString() == "Nos")
-                                        {
-                                            getOrderValue.Desciption = "Nos";
-                                        }
-                                        else
-                                        {
-                                            getOrderValue.Desciption = "Kgs";
-                                        }
-                                    }
                                     getOrderValue.Units = drbrnchprdt["Units"].ToString();
                                     getOrderValue.Unitqty = drbrnchprdt["Qty"].ToString();
                                     //string AgentUnitPrice = drbrnchprdt["Aunitprice"].ToString();
@@ -8439,22 +8396,7 @@
                                     float Unitqty = (float)drbrnchprdt["Qty"];
                                     float TotalRate = 0;
                                     TotalRate = Rate;
-                                    //if (drbrnchprdt["Units"].ToString() == "ml")
-                                    //{
-                                    //    TotalRate = Rate;
-                                    //}
-                                    //if (drbrnchprdt["Units"].ToString() == "ltr")
-                                    //{
-                                    //    TotalRate = Rate;
-                                    //}
-                                    //if (drbrnchprdt["Units"].ToString() == "gms")
-                                    //{
-                                    //    TotalRate = Rate;
-                                    //}
-                                    //if (drbrnchprdt["Units"].ToString() == "kgs")
-                                    //{
-                                    //    TotalRate = Rate;
-                                    //}
+                                   
                                     getOrderValue.Rate = (float)Rate;
                                     getOrderValue.orderunitRate = (float)TotalRate;
                                     double offerorderqty = 0;
@@ -8584,17 +8526,6 @@
                                             if (dr["Units"].ToString() == "ml" || dr["Units"].ToString() == "ltr")
                                             {
                                                 getOrderValue.Desciption = "Ltrs";
-                                            }
-                                            else
-                                            {
-                                                if (dr["Units"].ToString() == "Nos")
-                                                {
-                                                    getOrderValue.Desciption = "Nos";
-                                                }
-                                                else
-                                                {
-                                                    getOrderValue.Desciption = "Kgs";
-                                                }
                                             }
                                             getOrderValue.Units = dr["Units"].ToString();
                                             getOrderValue.Unitqty = dr["Qty"].ToString();
@@ -8745,17 +8676,6 @@
                                         {
                                             getOrderValue.Desciption = "Ltrs";
                                         }
-                                        else
-                                        {
-                                            if (dr["Units"].ToString() == "Nos")
-                                            {
-                                                getOrderValue.Desciption = "Nos";
-                                            }
-                                            else
-                                            {
-                                                getOrderValue.Desciption = "Kgs";
-                                            }
-                                        }
                                         getOrderValue.Units = dr["Units"].ToString();
                                         getOrderValue.Unitqty = dr["RawQty"].ToString();
                                         getOrderValue.orderunitqty = "";
@@ -8850,17 +8770,6 @@
                                         {
                                             getOrderValue.Desciption = "Ltrs";
                                         }
-                                        else
-                                        {
-                                            if (dr["Units"].ToString() == "Nos")
-                                            {
-                                                getOrderValue.Desciption = "Nos";
-                                            }
-                                            else
-                                            {
-                                                getOrderValue.Desciption = "Kgs";
-                                            }
-                                        }
                                         getOrderValue.Units = dr["Units"].ToString();
                                         getOrderValue.Unitqty = dr["RawQty"].ToString();
                                         getOrderValue.orderunitqty = dr["UnitQty"].ToString();
@@ -8944,17 +8853,6 @@
                                             if (dr["Units"].ToString() == "ml" || dr["Units"].ToString() == "ltr")
                                             {
                                                 getOrderValue.Desciption = "Ltrs";
-                                            }
-                                            else
-                                            {
-                                                if (dr["Units"].ToString() == "Nos")
-                                                {
-                                                    getOrderValue.Desciption = "Nos";
-                                                }
-                                                else
-                                                {
-                                                    getOrderValue.Desciption = "Kgs";
-                                                }
                                             }
                                             getOrderValue.Units = dr["Units"].ToString();
                                             getOrderValue.Unitqty = dr["RawQty"].ToString();
