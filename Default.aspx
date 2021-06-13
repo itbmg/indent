@@ -885,6 +885,8 @@
                 callHandler(data, s, e);
             }
             else {
+                 $('#divFillScreen').setTemplateURL('Collections11.htm');
+                $('#divFillScreen').processTemplate();
                 var data = { 'op': 'getBranchValuesamount', 'bid': bid };
                 var s = function (msg) {
                     if (msg) {
@@ -892,7 +894,7 @@
                             alert(msg);
                             window.location = "Login.aspx";
                         }
-//                        BindLeakeges();
+                        BindLeakeges();
                         var txtAmountPayable = msg[0].TotalAmount;
                         var txtTodayAmont = msg[0].TodayAmount;
                         HdnIndentNo = msg[0].IndentNo;
@@ -908,20 +910,11 @@
                         document.getElementById('txtAmountPayable').innerHTML = PayAmount.toFixed(2);
                         document.getElementById('txtTodayAmont').innerHTML = txtTodayAmont.toFixed(2);
                         document.getElementById('txtDeductions').innerHTML = 0;
-                        var TotAmount = parseFloat(txtTodayAmont + PayAmount);
-//                        if (msg[0].CollectionType == "DUE") {
-//                            CollectionType = "DUE";
-//                            document.getElementById("ddlPaymntType").disabled = true;
-//                            document.getElementById('txtPaidAmount').disabled = true;
-//                            document.getElementById('txtPaidAmount').value = "0";
-//                        }
-//                        else {
-//                            document.getElementById("ddlPaymntType").disabled = false;
-//                            document.getElementById('txtPaidAmount').disabled = false;
-//                        }
+                        var TotAmount = parseFloat(txtTodayAmont);
                         document.getElementById('txtTotalAmount').innerHTML = TotAmount.toFixed(2);
-//                        BindDeliverInventory();
-//                        GetCollectionStatus();
+                        
+                        BindDeliverInventory();
+                        GetCollectionStatus();
 
                     }
                     else {
@@ -933,6 +926,7 @@
                 callHandler(data, s, e);
             }
         }
+        
         var Changebutton = "";
         function ChangebtnText() {
             var data = { 'op': 'getTodayDate', 'bid': bid };
@@ -1376,6 +1370,7 @@
             document.getElementById('txtTodayAmont').innerHTML = TotChange;
             var TotalAmount = parseFloat(AmountPayable) - parseFloat(TotChange);
             document.getElementById('txtTotalAmount').innerHTML = TotalAmount;
+
         }
         function CollectionReturnQtyChange(Leakageqty) {
             if (Leakageqty.value == "") {
@@ -4732,11 +4727,12 @@
              <div id="divSalesOfficeDespatch" style="display:none;">
                 <input type="button" value="Sales Office Dispatch" id="Button11" class="inputButton" onclick=" return divSalesOfficeDespatchclick();" />
             </div>
-             <div id="divInvReporting" style="display:none;">
-                <input type="button" value="Return DC" id="Button4" class="inputButton" onclick=" return divInvReportingclick();" />
-            </div>
+          
             <div id="divShortage" style="display:none;">
                 <input type="button" value="Leaks and Shortage" id="Button3" class="inputButton" onclick=" return divShortageclick();" />
+            </div>
+               <div id="divInvReporting" style="display:none;">
+                <input type="button" value="Return DC" id="Button4" class="inputButton" onclick=" return divInvReportingclick();" />
             </div>
              <div id="divAmountReporting" style="display:none;">
                 <input type="button" value="Amount Reporting" id="Button5" class="inputButton" onclick=" return divAmountReportingclick();" />
