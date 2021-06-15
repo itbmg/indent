@@ -64,6 +64,7 @@
             public string PktQty { set; get; }
             public string tubQty { set; get; }
             public string Invqty { set; get; }
+            public string UnitQty { set; get; }
 
         }
         class Inventorydetail
@@ -6719,12 +6720,12 @@
                                 double UnitCost = 0;
                                 double.TryParse(o.UnitCost, out UnitCost);
                                 UnitCost = Math.Round(UnitCost, 2);
-                                double perltrCost = 0;
-                                double Invqty = 0;
-                                double.TryParse(o.Invqty, out Invqty);
-                                perltrCost = (1000 / Invqty) * UnitCost;
-                                perltrCost = Math.Round(perltrCost, 2);
-                                cmd.Parameters.AddWithValue("@UnitCost", perltrCost);
+                                //double perltrCost = 0;
+                                //double UOMQty = 0;
+                                //double.TryParse(o.UnitQty, out UOMQty);
+                                //perltrCost = (1000 / UOMQty) * UnitCost;
+                                //perltrCost = Math.Round(perltrCost, 2);
+                                cmd.Parameters.AddWithValue("@UnitCost", UnitCost);
                                 cmd.Parameters.AddWithValue("@pktrate", UnitCost);
 
                                 double unitQty = 0;
@@ -6750,7 +6751,7 @@
                                     cmd = new MySqlCommand("insert into indents_subtable (IndentNo,Product_sno,Status,unitQty,UnitCost,OTripId, tub_qty, pkt_qty,pkt_rate)values(@IndentNo,@Product_sno,@Status,@unitQty,@UnitCost,@OTripId,@tubqty, @pktqty,@pktrate)");
                                     cmd.Parameters.AddWithValue("@IndentNo", BranchIndentNo);
                                     cmd.Parameters.AddWithValue("@Product_sno", o.Productsno);
-                                    cmd.Parameters.AddWithValue("@UnitCost", perltrCost);
+                                    cmd.Parameters.AddWithValue("@UnitCost", UnitCost);
                                     cmd.Parameters.AddWithValue("@unitQty", unitQty);
                                     cmd.Parameters.AddWithValue("@Status", "Ordered");
                                     cmd.Parameters.AddWithValue("@tubqty", tubqty);
@@ -6969,12 +6970,12 @@
                                     double UnitCost = 0;
                                     double.TryParse(o.UnitCost, out UnitCost);
                                     UnitCost = Math.Round(UnitCost, 2);
-                                    double perltrCost = 0;
-                                    double Invqty = 0;
-                                    double.TryParse(o.Invqty, out Invqty);
-                                    perltrCost = (1000 / Invqty) * UnitCost;
-                                    perltrCost = Math.Round(perltrCost, 2);
-                                    cmd.Parameters.AddWithValue("@UnitCost", perltrCost);
+                                    //double perltrCost = 0;
+                                    //double UOMQty = 0;
+                                    //double.TryParse(o.UnitQty, out UOMQty);
+                                    //perltrCost = (1000 / UOMQty) * UnitCost;
+                                    //perltrCost = Math.Round(perltrCost, 2);
+                                    cmd.Parameters.AddWithValue("@UnitCost", UnitCost);
                                     double unitQty = 0;
                                     double.TryParse(o.Unitsqty, out unitQty);
                                     unitQty = Math.Round(unitQty, 2);
