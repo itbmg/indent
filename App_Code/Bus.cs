@@ -63,6 +63,7 @@
             public string FreeMilk { set; get; }
             public string PktQty { set; get; }
             public string tubQty { set; get; }
+            public string Invqty { set; get; }
 
         }
         class Inventorydetail
@@ -6071,7 +6072,7 @@
                 string Sno = context.Request["ProductSno"];
                 string BranchID = context.Request["BranchID"];
                 List<ProductUnit> ProductList = new List<ProductUnit>();
-                cmd = new MySqlCommand("SELECT branchproducts.unitprice, branchproducts.product_sno, productsdata.Qty, productsdata.Units FROM branchproducts INNER JOIN productsdata ON branchproducts.product_sno = productsdata.sno WHERE (branchproducts.branch_sno = @BranchID) and (branchproducts.product_sno=@sno) ");
+                cmd = new MySqlCommand("SELECT branchproducts.unitprice, branchproducts.product_sno, productsdata.Qty,  productsdata.invqty, productsdata.Units FROM branchproducts INNER JOIN productsdata ON branchproducts.product_sno = productsdata.sno WHERE (branchproducts.branch_sno = @BranchID) and (branchproducts.product_sno=@sno) ");
                 cmd.Parameters.AddWithValue("@sno", Sno);
                 cmd.Parameters.AddWithValue("@BranchID", BranchID);
                 DataTable dtBranchProduct = vdm.SelectQuery(cmd).Tables[0];
@@ -6082,7 +6083,7 @@
                 }
                 if (AunitPrice == "0")
                 {
-                    cmd = new MySqlCommand("SELECT productsdata.UnitPrice,productsdata.Qty, productsdata.Units, branchproducts.product_sno, branchproducts.unitprice AS Bunitprice , productsdata.ProductName FROM productsdata INNER JOIN branchproducts ON productsdata.sno = branchproducts.product_sno INNER JOIN branchmappingtable ON branchproducts.branch_sno = branchmappingtable.SuperBranch WHERE (branchmappingtable.SubBranch = @BranchID) AND (branchproducts.product_sno = @Sno)");
+                    cmd = new MySqlCommand("SELECT productsdata.UnitPrice,productsdata.Qty, productsdata.invqty,  productsdata.Units, branchproducts.product_sno, branchproducts.unitprice AS Bunitprice , productsdata.ProductName FROM productsdata INNER JOIN branchproducts ON productsdata.sno = branchproducts.product_sno INNER JOIN branchmappingtable ON branchproducts.branch_sno = branchmappingtable.SuperBranch WHERE (branchmappingtable.SubBranch = @BranchID) AND (branchproducts.product_sno = @Sno)");
                     cmd.Parameters.AddWithValue("@sno", Sno);
                     cmd.Parameters.AddWithValue("@BranchID", BranchID);
                     DataTable dtProduct = vdm.SelectQuery(cmd).Tables[0];
@@ -6090,6 +6091,7 @@
                     GetProduct.UnitPrice = dtProduct.Rows[0]["UnitPrice"].ToString();
                     GetProduct.Unitqty = dtProduct.Rows[0]["Qty"].ToString();
                     GetProduct.Units = dtProduct.Rows[0]["Units"].ToString();
+                    GetProduct.invqty = dtProduct.Rows[0]["invqty"].ToString();
                     string BranchUnitPrice = dtProduct.Rows[0]["BUnitPrice"].ToString();
                     float Rate = 0;
                     if (BranchUnitPrice != "0")
@@ -6148,6 +6150,7 @@
                     GetProduct.Units = dtBranchProduct.Rows[0]["Units"].ToString();
                     float Rate = (float)dtBranchProduct.Rows[0]["UnitPrice"];
                     float Unitqty = (float)dtBranchProduct.Rows[0]["Qty"];
+                    GetProduct.invqty = dtBranchProduct.Rows[0]["invqty"].ToString();
                     float TotalRate = 0;
                     TotalRate = Rate;
                     //if (dtBranchProduct.Rows[0]["Units"].ToString() == "ml")
@@ -6196,6 +6199,7 @@
             public string UnitPrice { get; set; }
             public string Unitqty { get; set; }
             public string Units { get; set; }
+            public string invqty { get; set; }
             public float orderunitRate { get; set; }
             public string Desciption { get; set; }
 
@@ -6715,11 +6719,13 @@
                                 double UnitCost = 0;
                                 double.TryParse(o.UnitCost, out UnitCost);
                                 UnitCost = Math.Round(UnitCost, 2);
-                                cmd.Parameters.AddWithValue("@UnitCost", UnitCost);
-
-                                
-
-
+                                double perltrCost = 0;
+                                double Invqty = 0;
+                                double.TryParse(o.Invqty, out Invqty);
+                                perltrCost = (1000 / Invqty) * UnitCost;
+                                perltrCost = Math.Round(perltrCost, 2);
+                                cmd.Parameters.AddWithValue("@UnitCost", perltrCost);
+                                cmd.Parameters.AddWithValue("@pktrate", UnitCost);
 
                                 double unitQty = 0;
                                 double.TryParse(o.Unitsqty, out unitQty);
@@ -6727,11 +6733,11 @@
 
                                 double pktqty = 0;
                                 double.TryParse(o.PktQty, out pktqty);
-                                pktqty = Math.Round(unitQty, 2);
+                                pktqty = Math.Round(pktqty, 2);
 
                                 double tubqty = 0;
                                 double.TryParse(o.tubQty, out tubqty);
-                                tubqty = Math.Round(unitQty, 2);
+                                tubqty = Math.Round(tubqty, 2);
 
                                 cmd.Parameters.AddWithValue("@tubqty", tubqty);
                                 cmd.Parameters.AddWithValue("@pktqty", pktqty);
@@ -6741,15 +6747,16 @@
                                 cmd.Parameters.AddWithValue("@OTripId", context.Session["TripdataSno"].ToString());
                                 if (vdm.Update(cmd) == 0)
                                 {
-                                    cmd = new MySqlCommand("insert into indents_subtable (IndentNo,Product_sno,Status,unitQty,UnitCost,OTripId, tub_qty, pkt_qty)values(@IndentNo,@Product_sno,@Status,@unitQty,@UnitCost,@OTripId,@tubqty, @pktqty)");
+                                    cmd = new MySqlCommand("insert into indents_subtable (IndentNo,Product_sno,Status,unitQty,UnitCost,OTripId, tub_qty, pkt_qty,pkt_rate)values(@IndentNo,@Product_sno,@Status,@unitQty,@UnitCost,@OTripId,@tubqty, @pktqty,@pktrate)");
                                     cmd.Parameters.AddWithValue("@IndentNo", BranchIndentNo);
                                     cmd.Parameters.AddWithValue("@Product_sno", o.Productsno);
-                                    cmd.Parameters.AddWithValue("@UnitCost", UnitCost);
+                                    cmd.Parameters.AddWithValue("@UnitCost", perltrCost);
                                     cmd.Parameters.AddWithValue("@unitQty", unitQty);
                                     cmd.Parameters.AddWithValue("@Status", "Ordered");
                                     cmd.Parameters.AddWithValue("@tubqty", tubqty);
                                     cmd.Parameters.AddWithValue("@pktqty", pktqty);
                                     cmd.Parameters.AddWithValue("@OTripId", context.Session["TripdataSno"].ToString());
+                                    cmd.Parameters.AddWithValue("@pktrate", UnitCost);
                                     if (unitQty != 0.0)
                                     {
                                         vdm.insert(cmd);
@@ -6761,30 +6768,30 @@
                                     string Psno = o.Productsno;
                                     if (Prodsno == Psno)
                                     {
-                                        cmd = new MySqlCommand("Update  EditedIndents set Prodsno=@Prodsno,EntryTime=@EntryTime,ActualQty=@ActualQty,EditQty=@EditQty where BranchID=@BranchID and IndentNo=@IndentNo");
-                                        cmd.Parameters.AddWithValue("@IndentNo", BranchIndentNo);
-                                        cmd.Parameters.AddWithValue("@Prodsno", o.Productsno);
-                                        cmd.Parameters.AddWithValue("@BranchID", b_bid);
-                                        cmd.Parameters.AddWithValue("@EntryTime", ServerDateCurrentdate);
-                                        double Aqty = 0;
-                                        double.TryParse(dr["unitQty"].ToString(), out Aqty);
-                                        Aqty = Math.Round(Aqty, 2);
-                                        cmd.Parameters.AddWithValue("@ActualQty", Aqty);
-                                        double Eqty = 0;
-                                        double.TryParse(o.ReturnQty, out Eqty);
-                                        Eqty = Math.Round(Eqty, 2);
-                                        cmd.Parameters.AddWithValue("@EditQty", Eqty);
-                                        if (vdm.Update(cmd) == 0)
-                                        {
-                                            cmd = new MySqlCommand("insert into EditedIndents (IndentNo,Prodsno,BranchID,EntryTime,ActualQty,EditQty)values(@IndentNo,@Prodsno,@BranchID,@EntryTime,@ActualQty,@EditQty)");
-                                            cmd.Parameters.AddWithValue("@IndentNo", BranchIndentNo);
-                                            cmd.Parameters.AddWithValue("@Prodsno", o.Productsno);
-                                            cmd.Parameters.AddWithValue("@BranchID", b_bid);
-                                            cmd.Parameters.AddWithValue("@EntryTime", ServerDateCurrentdate);
-                                            cmd.Parameters.AddWithValue("@ActualQty", Aqty);
-                                            cmd.Parameters.AddWithValue("@EditQty", Eqty);
-                                            vdm.insert(cmd);
-                                        }
+                                        //cmd = new MySqlCommand("Update  EditedIndents set Prodsno=@Prodsno,EntryTime=@EntryTime,ActualQty=@ActualQty,EditQty=@EditQty where BranchID=@BranchID and IndentNo=@IndentNo");
+                                        //cmd.Parameters.AddWithValue("@IndentNo", BranchIndentNo);
+                                        //cmd.Parameters.AddWithValue("@Prodsno", o.Productsno);
+                                        //cmd.Parameters.AddWithValue("@BranchID", b_bid);
+                                        //cmd.Parameters.AddWithValue("@EntryTime", ServerDateCurrentdate);
+                                        //double Aqty = 0;
+                                        //double.TryParse(dr["unitQty"].ToString(), out Aqty);
+                                        //Aqty = Math.Round(Aqty, 2);
+                                        //cmd.Parameters.AddWithValue("@ActualQty", Aqty);
+                                        //double Eqty = 0;
+                                        //double.TryParse(o.ReturnQty, out Eqty);
+                                        //Eqty = Math.Round(Eqty, 2);
+                                        //cmd.Parameters.AddWithValue("@EditQty", Eqty);
+                                        //if (vdm.Update(cmd) == 0)
+                                        //{
+                                        //    cmd = new MySqlCommand("insert into EditedIndents (IndentNo,Prodsno,BranchID,EntryTime,ActualQty,EditQty)values(@IndentNo,@Prodsno,@BranchID,@EntryTime,@ActualQty,@EditQty)");
+                                        //    cmd.Parameters.AddWithValue("@IndentNo", BranchIndentNo);
+                                        //    cmd.Parameters.AddWithValue("@Prodsno", o.Productsno);
+                                        //    cmd.Parameters.AddWithValue("@BranchID", b_bid);
+                                        //    cmd.Parameters.AddWithValue("@EntryTime", ServerDateCurrentdate);
+                                        //    cmd.Parameters.AddWithValue("@ActualQty", Aqty);
+                                        //    cmd.Parameters.AddWithValue("@EditQty", Eqty);
+                                        //    vdm.insert(cmd);
+                                        //}
                                     }
                                 }
                             }
@@ -6956,13 +6963,18 @@
                             {
                                 if (o.Productsno != null)
                                 {
-                                    cmd = new MySqlCommand("insert into indents_subtable (IndentNo,Product_sno,Status,unitQty,UnitCost,OTripId, tub_qty, pkt_qty)values(@IndentNo,@Product_sno,@Status,@unitQty,@UnitCost,@OTripId,@tubQty,@PktQty)");
+                                    cmd = new MySqlCommand("insert into indents_subtable (IndentNo,Product_sno,Status,unitQty,UnitCost,OTripId, tub_qty, pkt_qty,pkt_rate)values(@IndentNo,@Product_sno,@Status,@unitQty,@UnitCost,@OTripId,@tubQty,@PktQty,@pktrate)");
                                     cmd.Parameters.AddWithValue("@IndentNo", IndentNo);
                                     cmd.Parameters.AddWithValue("@Product_sno", o.Productsno);
                                     double UnitCost = 0;
                                     double.TryParse(o.UnitCost, out UnitCost);
                                     UnitCost = Math.Round(UnitCost, 2);
-                                    cmd.Parameters.AddWithValue("@UnitCost", UnitCost);
+                                    double perltrCost = 0;
+                                    double Invqty = 0;
+                                    double.TryParse(o.Invqty, out Invqty);
+                                    perltrCost = (1000 / Invqty) * UnitCost;
+                                    perltrCost = Math.Round(perltrCost, 2);
+                                    cmd.Parameters.AddWithValue("@UnitCost", perltrCost);
                                     double unitQty = 0;
                                     double.TryParse(o.Unitsqty, out unitQty);
                                     unitQty = Math.Round(unitQty, 2);
@@ -6977,10 +6989,7 @@
                                     cmd.Parameters.AddWithValue("@PktQty", PktQty);
                                     cmd.Parameters.AddWithValue("@tubQty", tubQty);
                                     cmd.Parameters.AddWithValue("@OTripId", context.Session["TripdataSno"].ToString());
-
-
-
-
+                                    cmd.Parameters.AddWithValue("@pktrate", UnitCost);
                                     if (unitQty != 0.0)
                                     {
                                         vdm.insert(cmd);
@@ -8774,7 +8783,7 @@
                         if (DairyStatus == "Orders")
                         {
                             //By sundeep cmd = new MySqlCommand("SELECT productsdata.ProductName,indents_subtable.unitQty,indents_subtable.unitCost, productsdata.sno, indents_subtable.unitQty * indents_subtable.UnitCost AS Total, indents.IndentNo, productsdata.Qty AS RawQty , productsdata.Units FROM indents INNER JOIN indents_subtable ON indents.IndentNo = indents_subtable.IndentNo INNER JOIN productsdata ON indents_subtable.Product_sno = productsdata.sno WHERE (indents.Branch_id = @bsno)  and (indents.IndentType = @IndentType) AND (indents.UserData_sno = @UserName) AND (indents.I_date between @d1 AND  @d2)");
-                            cmd = new MySqlCommand("SELECT productsdata.ProductName, productsdata.invqty, productsdata.UnitPrice, branchproducts_1.Rank,indents_subtable.unitQty, indents_subtable.UnitCost, productsdata.sno, indents_subtable.unitQty * indents_subtable.UnitCost AS Total, indents.IndentNo, productsdata.Qty AS RawQty, productsdata.Units, branchproducts.unitprice AS BUnitPrice, branchproducts.branch_sno, branchmappingtable.SuperBranch, indents.I_date, branchproducts_1.unitprice AS SOUnitPrice, branchproducts.flag FROM indents INNER JOIN branchproducts ON indents.Branch_id = branchproducts.branch_sno INNER JOIN productsdata ON branchproducts.product_sno = productsdata.sno INNER JOIN branchmappingtable ON branchproducts.branch_sno = branchmappingtable.SubBranch INNER JOIN branchproducts branchproducts_1 ON branchmappingtable.SuperBranch = branchproducts_1.branch_sno AND  branchproducts.product_sno = branchproducts_1.product_sno LEFT OUTER JOIN indents_subtable ON indents.IndentNo = indents_subtable.IndentNo AND branchproducts.product_sno = indents_subtable.Product_sno WHERE (indents.I_date BETWEEN @d1 AND @d2) AND (indents.Branch_id = @bsno) AND (indents.IndentType = @IndentType) ORDER BY branchproducts_1.Rank");
+                            cmd = new MySqlCommand("SELECT productsdata.ProductName, productsdata.invqty, productsdata.UnitPrice, branchproducts_1.Rank,indents_subtable.unitQty,indents_subtable.tub_qty,indents_subtable.pkt_qty, indents_subtable.UnitCost, productsdata.sno, indents_subtable.unitQty * indents_subtable.UnitCost AS Total, indents.IndentNo, productsdata.Qty AS RawQty, productsdata.Units, branchproducts.unitprice AS BUnitPrice, branchproducts.branch_sno, branchmappingtable.SuperBranch, indents.I_date, branchproducts_1.unitprice AS SOUnitPrice, branchproducts.flag FROM indents INNER JOIN branchproducts ON indents.Branch_id = branchproducts.branch_sno INNER JOIN productsdata ON branchproducts.product_sno = productsdata.sno INNER JOIN branchmappingtable ON branchproducts.branch_sno = branchmappingtable.SubBranch INNER JOIN branchproducts branchproducts_1 ON branchmappingtable.SuperBranch = branchproducts_1.branch_sno AND  branchproducts.product_sno = branchproducts_1.product_sno LEFT OUTER JOIN indents_subtable ON indents.IndentNo = indents_subtable.IndentNo AND branchproducts.product_sno = indents_subtable.Product_sno WHERE (indents.I_date BETWEEN @d1 AND @d2) AND (indents.Branch_id = @bsno) AND (indents.IndentType = @IndentType) ORDER BY branchproducts_1.Rank");
                             cmd.Parameters.AddWithValue("@d1", DateConverter.GetLowDate(Currentdate));
                             cmd.Parameters.AddWithValue("@d2", DateConverter.GetHighDate(Currentdate));
                             cmd.Parameters.AddWithValue("@UserName", Username);
@@ -8784,7 +8793,7 @@
                             context.Session["Orders"] = dtBranch;
                             if (dtBranch.Rows.Count == 0)
                             {
-                                cmd = new MySqlCommand("SELECT productsdata.ProductName, productsdata.invqty, branchproducts_1.Rank,productsdata.UnitPrice, indents_subtable.unitQty, indents_subtable.UnitCost, productsdata.sno, indents_subtable.unitQty * indents_subtable.UnitCost AS Total, indents.IndentNo, productsdata.Qty AS RawQty, productsdata.Units, branchproducts.unitprice AS BUnitPrice, branchproducts.branch_sno, branchmappingtable.SuperBranch, branchproducts_1.unitprice AS SOUnitPrice FROM indents_subtable INNER JOIN productsdata ON indents_subtable.Product_sno = productsdata.sno INNER JOIN indents ON indents_subtable.IndentNo = indents.IndentNo INNER JOIN branchproducts ON productsdata.sno = branchproducts.product_sno AND indents.Branch_id = branchproducts.branch_sno INNER JOIN branchmappingtable ON branchproducts.branch_sno = branchmappingtable.SubBranch INNER JOIN branchproducts branchproducts_1 ON branchmappingtable.SuperBranch = branchproducts_1.branch_sno AND branchproducts.product_sno = branchproducts_1.product_sno WHERE (indents.IndentType = @IndentType) AND (indents.UserData_sno = @UserName) AND (indents.I_date between @d1 AND  @d2) AND (indents.Branch_id = @bsno) GROUP BY productsdata.ProductName, indents.Branch_id, branchproducts.branch_sno ORDER BY branchproducts_1.Rank");
+                                cmd = new MySqlCommand("SELECT productsdata.ProductName, productsdata.invqty, branchproducts_1.Rank,productsdata.UnitPrice, indents_subtable.unitQty,indents_subtable.tub_qty,indents_subtable.pkt_qty, indents_subtable.UnitCost, productsdata.sno, indents_subtable.unitQty * indents_subtable.UnitCost AS Total, indents.IndentNo, productsdata.Qty AS RawQty, productsdata.Units, branchproducts.unitprice AS BUnitPrice, branchproducts.branch_sno, branchmappingtable.SuperBranch, branchproducts_1.unitprice AS SOUnitPrice FROM indents_subtable INNER JOIN productsdata ON indents_subtable.Product_sno = productsdata.sno INNER JOIN indents ON indents_subtable.IndentNo = indents.IndentNo INNER JOIN branchproducts ON productsdata.sno = branchproducts.product_sno AND indents.Branch_id = branchproducts.branch_sno INNER JOIN branchmappingtable ON branchproducts.branch_sno = branchmappingtable.SubBranch INNER JOIN branchproducts branchproducts_1 ON branchmappingtable.SuperBranch = branchproducts_1.branch_sno AND branchproducts.product_sno = branchproducts_1.product_sno WHERE (indents.IndentType = @IndentType) AND (indents.UserData_sno = @UserName) AND (indents.I_date between @d1 AND  @d2) AND (indents.Branch_id = @bsno) GROUP BY productsdata.ProductName, indents.Branch_id, branchproducts.branch_sno ORDER BY branchproducts_1.Rank");
                                 // cmd = new MySqlCommand("SELECT productsdata.ProductName, productsdata.UnitPrice, indents_subtable.unitQty, indents_subtable.UnitCost, productsdata.sno, indents_subtable.unitQty * indents_subtable.UnitCost AS Total, indents.IndentNo, productsdata.Qty AS RawQty, productsdata.Units, branchproducts.branch_sno, branchproducts.unitprice AS BUnitPrice FROM  indents_subtable INNER JOIN  productsdata ON indents_subtable.Product_sno = productsdata.sno INNER JOIN indents ON indents_subtable.IndentNo = indents.IndentNo INNER JOIN branchproducts ON productsdata.sno = branchproducts.product_sno WHERE  (indents.IndentType = @IndentType) AND (indents.UserData_sno = @UserName) AND (indents.I_date > @d1) AND (indents.I_date < @d2) AND  (indents.Branch_id = @bsno) GROUP BY productsdata.ProductName, indents.Branch_id, branchproducts.product_sno ORDER BY productsdata.sno");
                                 //cmd = new MySqlCommand("SELECT productsdata.ProductName, productsdata.UnitPrice, indents_subtable.unitQty, indents_subtable.UnitCost, productsdata.sno,  indents_subtable.unitQty * indents_subtable.UnitCost AS Total, indents.IndentNo, productsdata.Qty AS RawQty, productsdata.Units, branchproducts.branch_sno,  branchproducts.unitprice AS BUnitPrice FROM indents_subtable INNER JOIN productsdata ON indents_subtable.Product_sno = productsdata.sno INNER JOIN indents ON indents_subtable.IndentNo = indents.IndentNo INNER JOIN branchproducts ON productsdata.sno = branchproducts.product_sno AND indents.Branch_id = branchproducts.branch_sno WHERE (indents.IndentType = @IndentType) AND (indents.UserData_sno = @UserName) AND (indents.I_date > @d1) AND (indents.I_date < @d2) AND  (indents.Branch_id = @bsno) GROUP BY productsdata.ProductName, indents.Branch_id, branchproducts.product_sno ORDER BY productsdata.sno");
                                 // cmd = new MySqlCommand("SELECT productsdata.ProductName,indents_subtable.unitQty,indents_subtable.unitCost, productsdata.sno, indents_subtable.unitQty * indents_subtable.UnitCost AS Total, indents.IndentNo, productsdata.Qty AS RawQty , productsdata.Units FROM indents INNER JOIN indents_subtable ON indents.IndentNo = indents_subtable.IndentNo INNER JOIN productsdata ON indents_subtable.Product_sno = productsdata.sno WHERE (indents.Branch_id = @bsno)  and (indents.IndentType = @IndentType) AND (indents.UserData_sno = @UserName) AND (indents.I_date > @d1) AND (indents.I_date < @d2)");
@@ -8886,6 +8895,8 @@
                                         getOrderValue.Units = "";
                                         getOrderValue.Unitqty = "";
                                         getOrderValue.invqty = "";
+                                        getOrderValue.tubQty = 0;
+                                        getOrderValue.Qtypkts = 0;
                                         float Rate = 0;
                                         float TotalRate = 0;
                                         getOrderValue.Rate = (float)Rate;
@@ -8908,6 +8919,12 @@
                                         int prodsno = 0;
                                         int.TryParse(dr["sno"].ToString(), out prodsno);
                                         getOrderValue.Productsno = prodsno;
+                                        double tubQty = 0;
+                                        double.TryParse(dr["tub_qty"].ToString(), out tubQty);
+                                        getOrderValue.tubQty = tubQty;
+                                        double Qtypkts = 0;
+                                        double.TryParse(dr["pkt_qty"].ToString(), out Qtypkts);
+                                        getOrderValue.Qtypkts = Qtypkts; 
                                         float UnitQty = 0;
                                         if (dr["UnitQty"].ToString() == "")
                                         {
@@ -8921,6 +8938,7 @@
                                         getOrderValue.Qty = (float)Math.Round(qty, 2);
                                         //float Rate = (float)dr["unitCost"];
                                         string BranchUnitPrice = dr["BUnitPrice"].ToString();
+
                                         if (BranchUnitPrice == "")
                                         {
                                             BranchUnitPrice = "0";
@@ -9022,6 +9040,12 @@
                                         int prodsno = 0;
                                         int.TryParse(dr["sno"].ToString(), out prodsno);
                                         getOrderValue.Productsno = prodsno;
+                                        double tubQty = 0;
+                                        double.TryParse(dr["tub_qty"].ToString(), out tubQty);
+                                        getOrderValue.tubQty = tubQty;
+                                        double Qtypkts = 0;
+                                        double.TryParse(dr["pkt_qty"].ToString(), out Qtypkts);
+                                        getOrderValue.Qtypkts = Qtypkts;
                                         //qty=(float)dr["UnitQty"];
                                         if (dr["UnitQty"].ToString() != "")
                                         {
@@ -9100,6 +9124,7 @@
                                             }
                                         }
                                         getOrderValue.Units = dr["Units"].ToString();
+                                        getOrderValue.invqty = dr["invqty"].ToString();
                                         getOrderValue.Unitqty = dr["RawQty"].ToString();
                                         getOrderValue.orderunitqty = dr["UnitQty"].ToString();
                                         if (dr["UnitQty"].ToString() != "")
@@ -9116,6 +9141,12 @@
                                             int prodsno = 0;
                                             int.TryParse(dr["sno"].ToString(), out prodsno);
                                             getOrderValue.Productsno = prodsno;
+                                            double tubQty = 0;
+                                            double.TryParse(dr["tub_qty"].ToString(), out tubQty);
+                                            getOrderValue.tubQty = tubQty;
+                                            double Qtypkts = 0;
+                                            double.TryParse(dr["pkt_qty"].ToString(), out Qtypkts);
+                                            getOrderValue.Qtypkts = Qtypkts;
                                             //qty=(float)dr["UnitQty"];
                                             if (dr["UnitQty"].ToString() != "")
                                             {
@@ -9195,6 +9226,7 @@
                                                 }
                                             }
                                             getOrderValue.Units = dr["Units"].ToString();
+                                            getOrderValue.invqty = dr["invqty"].ToString();
                                             getOrderValue.Unitqty = dr["RawQty"].ToString();
                                             getOrderValue.orderunitqty = dr["UnitQty"].ToString();
                                             if (dr["UnitQty"].ToString() != "")
@@ -9220,6 +9252,8 @@
                                     getOrderValue.Desciption = "";
                                     getOrderValue.Units = "";
                                     getOrderValue.Unitqty = "";
+                                    getOrderValue.tubQty = 0;
+                                    getOrderValue.Qtypkts = 0;
                                     float Rate = 0;
                                     float TotalRate = 0;
                                     getOrderValue.Rate = (float)Rate;
@@ -9535,6 +9569,8 @@
             public double TRQty { set; get; }
             public double PrevQty { set; get; }
             public double returnqty { set; get; }
+            public double tubQty { set; get; }
+            public double Qtypkts { set; get; }
         }
         public class redirecturl
         {
