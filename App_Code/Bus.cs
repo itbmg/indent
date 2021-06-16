@@ -325,10 +325,10 @@
                         {
                             btnFinalDCSaveClick(context);
                         }
-                        //if (obj.op == "CollectionSaveClick")
-                        //{
-                        //    CollectionSaveClick(context);
-                        //}
+                        if (obj.op == "CollectioninventrySaveClick")
+                        {
+                            CollectioninventrySaveClick(context);
+                        }
                         if (obj.op == "btnRemarksSaveClick")
                         {
                             btnRemarksSaveClick(context);
@@ -7238,6 +7238,169 @@
 
                 string response = GetJson(MsgList);
                 context.Response.Write(response);
+            }
+        }
+        class invcollectionsave
+        {
+            public string op { set; get; }
+            public string BranchID { set; get; }
+            public List<Inventorydetail> Inventorydetails { set; get; }
+            public string IndentNo { set; get; }
+            public string btnvalue { set; get; }
+
+        }
+        private void CollectioninventrySaveClick(HttpContext context)
+        {
+            try
+            {
+                vdm = new VehicleDBMgr();
+                var js = new JavaScriptSerializer();
+                List<string> MsgList = new List<string>();
+                if (context.Session["userdata_sno"] == null)
+                {
+                    string errmsg = "Session Expired";
+                    string errresponse = GetJson(errmsg);
+                    context.Response.Write(errresponse);
+                }
+                else
+                {
+                    var title1 = context.Request.Params[1];
+                    invcollectionsave obj = js.Deserialize<invcollectionsave>(title1);
+                    string b_bid = obj.BranchID;
+                    string btnvalue = obj.btnvalue;
+                    DateTime ServerDateCurrentdate = VehicleDBMgr.GetTime(vdm.conn);
+                    cmd = new MySqlCommand("SELECT TransType, FromTran, ToTran, Qty,B_inv_sno FROM invtransactions12 WHERE (TransType = @TransType) AND  (ToTran = @TripID)");
+                    cmd.Parameters.AddWithValue("@TripID", context.Session["TripdataSno"].ToString());
+                    cmd.Parameters.AddWithValue("@TransType", "3");
+                    DataTable dtTotalCInvData = vdm.SelectQuery(cmd).Tables[0];
+                    foreach (Inventorydetail o in obj.Inventorydetails)
+                    {
+                        if (o.ReceivedQty != "0")
+                        {
+                            #region collection_inventory_syncdata
+                            DataRow[] drInvData = dtTotalCInvData.Select("FromTran=" + b_bid + " and B_inv_sno=" + o.InvSno);
+                            if (drInvData.Count() > 0)
+                            {
+                                DataTable dtInvData = drInvData.CopyToDataTable();
+                                int Aqty = 0;
+                                string Qty = dtInvData.Rows[0]["Qty"].ToString();
+                                if (Qty == "")
+                                {
+                                    Aqty = 0;
+                                }
+                                else
+                                {
+                                    int.TryParse(Qty, NumberStyles.Number, CultureInfo.CurrentCulture.NumberFormat, out Aqty);
+                                }
+                                int Eqty = 0;
+                                int.TryParse(o.ReceivedQty, NumberStyles.Number, CultureInfo.CurrentCulture.NumberFormat, out Eqty);
+                                int TQty = Aqty - Eqty;
+                                if (TQty >= 1)
+                                {
+                                    cmd = new MySqlCommand("update inventory_monitor set Qty=Qty-@Qty where Inv_Sno=@Inv_Sno and BranchId=@BranchId");
+                                    cmd.Parameters.AddWithValue("@Qty", TQty);
+                                    cmd.Parameters.AddWithValue("@Inv_Sno", o.InvSno);
+                                    cmd.Parameters.AddWithValue("@BranchId", b_bid);
+                                    if (vdm.Update(cmd) == 0)
+                                    {
+                                        cmd = new MySqlCommand("Insert into inventory_monitor(Qty,Inv_Sno,BranchId) values(@Qty,@Inv_Sno,@BranchId)");
+                                        cmd.Parameters.AddWithValue("@Qty", TQty);
+                                        cmd.Parameters.AddWithValue("@Inv_Sno", o.InvSno);
+                                        cmd.Parameters.AddWithValue("@BranchId", b_bid);
+                                        vdm.insert(cmd);
+                                    }
+                                }
+                                else
+                                {
+                                    TQty = Math.Abs(TQty);
+                                    cmd = new MySqlCommand("update inventory_monitor set Qty=Qty+@Qty where Inv_Sno=@Inv_Sno and BranchId=@BranchId");
+                                    cmd.Parameters.AddWithValue("@Qty", TQty);
+                                    cmd.Parameters.AddWithValue("@Inv_Sno", o.InvSno);
+                                    cmd.Parameters.AddWithValue("@BranchId", b_bid);
+                                    if (vdm.Update(cmd) == 0)
+                                    {
+                                        cmd = new MySqlCommand("Insert into inventory_monitor(Qty,Inv_Sno,BranchId) values(@Qty,@Inv_Sno,@BranchId)");
+                                        cmd.Parameters.AddWithValue("@Qty", TQty);
+                                        cmd.Parameters.AddWithValue("@Inv_Sno", o.InvSno);
+                                        cmd.Parameters.AddWithValue("@BranchId", b_bid);
+                                        vdm.insert(cmd);
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                cmd = new MySqlCommand("SELECT BranchId, Inv_Sno, Qty, Sno, EmpId, lostQty, Indent_Date,CTripid FROM inventory_monitor WHERE (CTripid = @ctripid) AND (BranchId = @agentid) and (Inv_Sno = @Inv_Sno)");
+                                cmd.Parameters.AddWithValue("@ctripid", context.Session["TripdataSno"].ToString());
+                                cmd.Parameters.AddWithValue("@agentid", b_bid);
+                                cmd.Parameters.AddWithValue("@Inv_Sno", o.InvSno);
+                                DataTable dtinvmonitor_Collected = vdm.SelectQuery(cmd).Tables[0];
+                                if (dtinvmonitor_Collected.Rows.Count > 0)
+                                {
+                                    //ErrMsg = "Inventory Collection Double Time" + o.BrancID;
+                                    //string toAddress = "ravindra1507@gmail.com";
+                                    //string subject = "Vyshnavi Offline";
+                                    //string body = "";
+                                    //if (context.Session["TripdataSno"] == null)
+                                    //{
+                                    //    body = "ErrMsg" + ErrMsg;
+                                    //}
+                                    //else
+                                    //{
+                                    //    body = context.Session["TripdataSno"].ToString() + "ErrMsg" + ErrMsg;
+                                    //}
+                                    //SendEmail(toAddress, subject, body);
+                                }
+                                else
+                                {
+                                    cmd = new MySqlCommand("update inventory_monitor set Qty=Qty-@Qty,CTripid=@ctripid where Inv_Sno=@Inv_Sno and BranchId=@BranchId");
+                                    cmd.Parameters.AddWithValue("@Qty", o.ReceivedQty);
+                                    cmd.Parameters.AddWithValue("@Inv_Sno", o.InvSno);
+                                    cmd.Parameters.AddWithValue("@BranchId", b_bid);
+                                    cmd.Parameters.AddWithValue("@ctripid", context.Session["TripdataSno"].ToString());
+                                    if (vdm.Update(cmd) == 0)
+                                    {
+                                        cmd = new MySqlCommand("Insert into inventory_monitor(Qty,Inv_Sno,BranchId,CTripid) values(@Qty,@Inv_Sno,@BranchId,@ctripid)");
+                                        cmd.Parameters.AddWithValue("@Qty", o.ReceivedQty);
+                                        cmd.Parameters.AddWithValue("@Inv_Sno", o.InvSno);
+                                        cmd.Parameters.AddWithValue("@BranchId", b_bid);
+                                        cmd.Parameters.AddWithValue("@ctripid", context.Session["TripdataSno"].ToString());
+                                        vdm.insert(cmd);
+                                    }
+                                }
+
+                            }
+                            cmd = new MySqlCommand("update invtransactions12 set Qty=@Qty,DOE=@DOE,CollectionTime=@collectiontime where FromTran=@From and B_Inv_Sno=@B_Inv_Sno and EmpID=@EmpID and ToTran=@To and TransType=@TransType");
+                            cmd.Parameters.AddWithValue("@B_Inv_Sno", o.InvSno);
+                            cmd.Parameters.AddWithValue("@Qty", o.ReceivedQty);
+                            cmd.Parameters.AddWithValue("@DOE", ServerDateCurrentdate);
+                            cmd.Parameters.AddWithValue("@collectiontime", ServerDateCurrentdate);
+                            cmd.Parameters.AddWithValue("@From", b_bid);
+                            cmd.Parameters.AddWithValue("@TransType", "3");
+                            cmd.Parameters.AddWithValue("@EmpID", context.Session["userdata_sno"].ToString());
+                            cmd.Parameters.AddWithValue("@To", context.Session["TripdataSno"].ToString());
+                            if (vdm.Update(cmd) == 0)
+                            {
+                                cmd = new MySqlCommand("Insert into  invtransactions12(B_Inv_Sno,Qty,DOE,EmpID,FromTran,ToTran,TransType,CollectionTime) values(@B_Inv_Sno,@Qty,@DOE,@EmpID,@From,@To,@TransType,@collectiontime)");
+                                cmd.Parameters.AddWithValue("@B_Inv_Sno", o.InvSno);
+                                cmd.Parameters.AddWithValue("@Qty", o.ReceivedQty);
+                                cmd.Parameters.AddWithValue("@DOE", ServerDateCurrentdate);
+                                cmd.Parameters.AddWithValue("@collectiontime", ServerDateCurrentdate);
+                                cmd.Parameters.AddWithValue("@From", b_bid);
+                                cmd.Parameters.AddWithValue("@TransType", "3");
+                                cmd.Parameters.AddWithValue("@EmpID", context.Session["userdata_sno"].ToString());
+                                cmd.Parameters.AddWithValue("@To", context.Session["TripdataSno"].ToString());
+                                vdm.insert(cmd);
+                            }
+
+
+                            #endregion
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+
             }
         }
         private void btnDeliversSaveClick(HttpContext context)

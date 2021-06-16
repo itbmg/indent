@@ -2961,6 +2961,7 @@
             var data = { 'op': 'CollectionSaveClick', 'BranchID': BranchName, 'DenominationString': DenominationString, 'PaidAmount': PaidAmount, 'IndentNo': IndentNo, 'BalanceAmount': BalanceAmount, 'PaymentType': ddlPayMentType, 'btnvalue':btnvalue };
             var s = function (msg) {
                 if (msg) {
+                    CollectionInventrySaveClick();
                     alert(msg);
                     document.getElementById('txtPaidAmount').disabled = true;
                     document.getElementById('BtnSave').value = "Edit";
@@ -2975,6 +2976,43 @@
             };
             $(document).ajaxStart($.blockUI).ajaxStop($.unblockUI);
             callHandler(data, s, e);
+        }
+        function CollectionInventrySaveClick() {
+            var BranchName = document.getElementById('ddlBranchName').value;
+            var ddlPayMentType = document.getElementById('ddlPaymntType').value;
+            var IndentNo = HdnIndentNo;
+            var BalanceAmount = document.getElementById('txtBalanceAmount').innerHTML;
+            var btnvalue = document.getElementById('BtnSave').value;
+            var rowInventory = $("#tableInventory tr:gt(0)");
+            var Inventorydetails = new Array();
+            $(rowInventory).each(function (i, obj) {
+                if ($(this).find('#txtSno').text() == "" || $(this).find('#txtReceivedQty').val() == "") {
+                }
+                else {
+                    Inventorydetails.push({ SNo: $(this).find('#txtSno').text(), InvSno: $(this).find('#hdnInvSno').val(), ReceivedQty: $(this).find('#txtReceivedQty').val(), BalanceQty: $(this).find('#txtbalanceQty').text() });
+                }
+            });
+            if (Inventorydetails.length == 0) {
+                alert("Please Fill Received Qty");
+                return false;
+            }
+            var data = { 'op': 'CollectioninventrySaveClick', 'BranchID': BranchName, 'Inventorydetails': Inventorydetails, 'IndentNo': IndentNo, 'btnvalue': btnvalue };
+            var s = function (msg) {
+                if (msg) {
+                    receiveInventorydetailssave();
+                    alert(msg);
+                    document.getElementById('BtnSave').value = "Edit";
+                    if (msg == "Session Expired") {
+                        window.location = "Login.aspx";
+                    }
+                }
+                else {
+                }
+            };
+            var e = function (x, h, e) {
+            };
+            $(document).ajaxStart($.blockUI).ajaxStop($.unblockUI);
+            CallHandlerUsingJson(data, s, e);
         }
         function BtnOKClick() {
             document.getElementById('txtPaidAmount').value = document.getElementById('txt_Total').innerHTML;
