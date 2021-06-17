@@ -4526,7 +4526,7 @@
             var rowLeaks = $("#tableSalesOfficeLeaksdetails tr:gt(0)");
             var tableSalesOfficeLeaksdetails = new Array();
             $(rowLeaks).each(function (i, obj) {
-                if ($(this).find('#txtsno').text() == "" || $(this).find('#txtLeakQty').val() == "") {
+                if ($(this).find('#txtsno').text() == "" || ($(this).find('#txtLeakQty').val() == "" && $(this).find('#txtShortQty').val() && $(this).find('#txtFreeQty').val())) {
                 }
                 else {
                     tableSalesOfficeLeaksdetails.push({ SNo: $(this).find('#txtsno').text(), ProductSno: $(this).find('#hdnProductSno').val(), Product: $(this).find('#txtproduct').text(), Qty: $(this).find('#txtBranchQty').text(), LeakQty: $(this).find('#txtLeakQty').val(), ShortQty: $(this).find('#txtShortQty').val(), FreeMilk: $(this).find('#txtFreeQty').val() });
