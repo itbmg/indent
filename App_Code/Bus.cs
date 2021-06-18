@@ -6497,7 +6497,7 @@
                         }
                         else
                         {
-                            string closingbalance = dtagenttrans.Rows[0]["clo_balance"].ToString();
+                            string closingbalance = dtagentmaxtransvalues.Rows[0]["clo_balance"].ToString();
                             double clsvalue = Convert.ToDouble(closingbalance);
                             double closingvalue = clsvalue - TotPaidAmount;
 
