@@ -6468,6 +6468,9 @@
 
                         string indDate = context.Session["I_Date"].ToString();
                         DateTime dt_indDate = Convert.ToDateTime(indDate);
+                        cmd = new MySqlCommand("SELECT agentid, opp_balance, inddate, salesvalue, clo_balance FROM agent_bal_trans WHERE sno=@sno");
+                        cmd.Parameters.AddWithValue("@sno", maxsno);
+                        DataTable dtagentmaxtransvalues = vdm.SelectQuery(cmd).Tables[0];
 
                         cmd = new MySqlCommand("SELECT agentid, opp_balance, inddate, salesvalue, clo_balance FROM agent_bal_trans WHERE agentid=@agentid AND inddate between @d1 and @d2");
                         cmd.Parameters.AddWithValue("@agentid", b_bid);
@@ -6478,8 +6481,8 @@
                         {
                             //foreach (DataRow dra in dtagenttrans.Rows)
                             //{
-                            string oppbalance = dtagenttrans.Rows[0]["opp_balance"].ToString();
-                            string salesvalue = dtagenttrans.Rows[0]["salesvalue"].ToString();
+                            string oppbalance = dtagentmaxtransvalues.Rows[0]["opp_balance"].ToString();
+                            string salesvalue = dtagentmaxtransvalues.Rows[0]["salesvalue"].ToString();
                             double total = Convert.ToDouble(oppbalance) + Convert.ToDouble(salesvalue);
                             string closingbalance = dtagenttrans.Rows[0]["clo_balance"].ToString();
                             double clsvalue = Convert.ToDouble(closingbalance);
@@ -6576,7 +6579,7 @@
                                             double total = Convert.ToDouble(oppbalance) + Convert.ToDouble(salesvalue);
                                             string closingbalance = dtagenttrans.Rows[0]["clo_balance"].ToString();
                                             double clsvalue = Convert.ToDouble(closingbalance);
-                                            double closingvalue = clsvalue - TotPaidAmount;
+                                            double closingvalue = clsvalue - diffamt;
                                             string inddate = dtagenttrans.Rows[0]["inddate"].ToString();
                                             cmd = new MySqlCommand("UPDATE agent_bal_trans SET paidamount=paidamount+@paidamount, clo_balance=clo_balance-@clo_balance where sno=@refno");
                                             cmd.Parameters.AddWithValue("@paidamount", diffamt);
@@ -6628,7 +6631,7 @@
                                         double total = Convert.ToDouble(oppbalance) + Convert.ToDouble(salesvalue);
                                         string closingbalance = dtagenttrans.Rows[0]["clo_balance"].ToString();
                                         double clsvalue = Convert.ToDouble(closingbalance);
-                                        double closingvalue = clsvalue - TotPaidAmount;
+                                        double closingvalue = clsvalue - diffamt;
                                         string inddate = dtagenttrans.Rows[0]["inddate"].ToString();
                                         cmd = new MySqlCommand("UPDATE agent_bal_trans SET paidamount=paidamount-@paidamount, clo_balance=clo_balance+@clo_balance where sno=@refno");
                                         cmd.Parameters.AddWithValue("@paidamount", diffamt);
