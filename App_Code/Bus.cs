@@ -5313,9 +5313,11 @@
                 string Permissions = context.Request["Permissions"];
                 string RouteId = context.Session["RouteId"].ToString();
                 //cmd = new MySqlCommand("SELECT indents.Branch_id, branchdata.BranchName, collections.AmountPaid FROM indents INNER JOIN branchdata ON indents.Branch_id = branchdata.sno INNER JOIN branchroutesubtable ON branchroutesubtable.BranchID = branchdata.sno INNER JOIN branchroutes ON branchroutesubtable.RefNo = branchroutes.Sno INNER JOIN collections ON collections.Branchid = indents.Branch_id WHERE (branchroutes.Sno = @RouteId) AND (collections.PaidDate >= @starttime) AND (collections.PaidDate < @endtime) GROUP BY branchdata.BranchName");
-                cmd = new MySqlCommand("SELECT indents.Branch_id, branchdata.BranchName, collections.AmountPaid, branchroutes.Sno FROM indents INNER JOIN branchdata ON indents.Branch_id = branchdata.sno INNER JOIN branchroutesubtable ON branchroutesubtable.BranchID = branchdata.sno INNER JOIN branchroutes ON branchroutesubtable.RefNo = branchroutes.Sno INNER JOIN collections ON collections.Branchid = indents.Branch_id INNER JOIN dispatch_sub ON branchroutes.Sno = dispatch_sub.Route_id WHERE (collections.PaidDate between @d1 and @d2) AND (dispatch_sub.dispatch_sno = @dispatch_sno) GROUP BY branchdata.BranchName, branchroutes.Sno, dispatch_sub.dispatch_sno");
+                // cmd = new MySqlCommand("SELECT indents.Branch_id, branchdata.BranchName, collections.AmountPaid, branchroutes.Sno FROM indents INNER JOIN branchdata ON indents.Branch_id = branchdata.sno INNER JOIN branchroutesubtable ON branchroutesubtable.BranchID = branchdata.sno INNER JOIN branchroutes ON branchroutesubtable.RefNo = branchroutes.Sno INNER JOIN collections ON collections.Branchid = indents.Branch_id INNER JOIN dispatch_sub ON branchroutes.Sno = dispatch_sub.Route_id WHERE (collections.PaidDate between @d1 and @d2) AND (dispatch_sub.dispatch_sno = @dispatch_sno) GROUP BY branchdata.BranchName, branchroutes.Sno, dispatch_sub.dispatch_sno");
+                // adding trip id in where cluse
+                cmd = new MySqlCommand("SELECT indents.Branch_id, branchdata.BranchName, collections.AmountPaid, branchroutes.Sno FROM indents INNER JOIN branchdata ON indents.Branch_id = branchdata.sno INNER JOIN branchroutesubtable ON branchroutesubtable.BranchID = branchdata.sno INNER JOIN branchroutes ON branchroutesubtable.RefNo = branchroutes.Sno INNER JOIN collections ON collections.Branchid = indents.Branch_id INNER JOIN dispatch_sub ON branchroutes.Sno = dispatch_sub.Route_id WHERE (collections.PaidDate between @d1 and @d2) AND (dispatch_sub.dispatch_sno = @dispatch_sno) AND (collections.tripId = @tripid) GROUP BY branchdata.BranchName, branchroutes.Sno, dispatch_sub.dispatch_sno");
                 cmd.Parameters.AddWithValue("@dispatch_sno", RouteId);
-                //cmd.Parameters.AddWithValue("@EmpSno", 27);
+                cmd.Parameters.AddWithValue("@tripid", context.Session["TripdataSno"].ToString());
                 cmd.Parameters.AddWithValue("@d1", DateConverter.GetLowDate(Currentdate));
                 cmd.Parameters.AddWithValue("@d2", DateConverter.GetHighDate(Currentdate));
                 DataTable dtColectionBranchs = vdm.SelectQuery(cmd).Tables[0];
@@ -6481,7 +6483,7 @@
                             double total = Convert.ToDouble(oppbalance) + Convert.ToDouble(salesvalue);
                             string closingbalance = dtagenttrans.Rows[0]["clo_balance"].ToString();
                             double clsvalue = Convert.ToDouble(closingbalance);
-                            double closingvalue = clsvalue - TotPaidAmount;
+                            double closingvalue = total - TotPaidAmount;
                             string inddate = dtagenttrans.Rows[0]["inddate"].ToString();
                             cmd = new MySqlCommand("UPDATE agent_bal_trans SET paidamount=@paidamount, clo_balance=@closing where sno=@refno");
                             cmd.Parameters.AddWithValue("@paidamount", TotPaidAmount);
@@ -6495,6 +6497,8 @@
                             string closingbalance = dtagenttrans.Rows[0]["clo_balance"].ToString();
                             double clsvalue = Convert.ToDouble(closingbalance);
                             double closingvalue = clsvalue - TotPaidAmount;
+
+
                             cmd = new MySqlCommand("UPDATE agent_bal_trans set  clo_balance=clo_balance-@clAmount  where agentid=@BranchId AND inddate=@inddate");
                             cmd.Parameters.AddWithValue("@BranchId", b_bid);
                             cmd.Parameters.AddWithValue("@inddate", dt_indDate);
