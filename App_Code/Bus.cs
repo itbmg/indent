@@ -9202,10 +9202,10 @@
                                         int.TryParse(dr["sno"].ToString(), out prodsno);
                                         getOrderValue.Productsno = prodsno;
                                         double tubQty = 0;
-                                        double.TryParse(dr["tub_qty"].ToString(), out tubQty);
+                                        //double.TryParse(dr["tub_qty"].ToString(), out tubQty);
                                         getOrderValue.tubQty = tubQty;
                                         double Qtypkts = 0;
-                                        double.TryParse(dr["pkt_qty"].ToString(), out Qtypkts);
+                                       // double.TryParse(dr["pkt_qty"].ToString(), out Qtypkts);
                                         getOrderValue.Qtypkts = Qtypkts; 
                                         float UnitQty = 0;
                                         if (dr["UnitQty"].ToString() == "")
