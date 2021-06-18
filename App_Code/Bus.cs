@@ -6484,10 +6484,10 @@
                             string oppbalance = dtagentmaxtransvalues.Rows[0]["opp_balance"].ToString();
                             string salesvalue = dtagentmaxtransvalues.Rows[0]["salesvalue"].ToString();
                             double total = Convert.ToDouble(oppbalance) + Convert.ToDouble(salesvalue);
-                            string closingbalance = dtagenttrans.Rows[0]["clo_balance"].ToString();
+                            string closingbalance = dtagentmaxtransvalues.Rows[0]["clo_balance"].ToString();
                             double clsvalue = Convert.ToDouble(closingbalance);
                             double closingvalue = total - TotPaidAmount;
-                            string inddate = dtagenttrans.Rows[0]["inddate"].ToString();
+                            string inddate = dtagentmaxtransvalues.Rows[0]["inddate"].ToString();
                             cmd = new MySqlCommand("UPDATE agent_bal_trans SET paidamount=@paidamount, clo_balance=@closing where sno=@refno");
                             cmd.Parameters.AddWithValue("@paidamount", TotPaidAmount);
                             cmd.Parameters.AddWithValue("@refno", maxsno);
