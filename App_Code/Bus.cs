@@ -6452,7 +6452,7 @@
                     vdm.Update(cmd);
 
                     //naveen amount histery entry
-                    cmd = new MySqlCommand("SELECT MAX(sno) as sno,agentid, opp_balance, inddate, salesvalue, clo_balance FROM agent_bal_trans WHERE agentid=@Branchid");
+                    cmd = new MySqlCommand("SELECT MAX(sno) as sno FROM agent_bal_trans WHERE agentid=@Branchid");
                     cmd.Parameters.AddWithValue("@Branchid", b_bid);
                     DataTable dtagenttrans = vdm.SelectQuery(cmd).Tables[0];
                     if (dtagenttrans.Rows.Count > 0)
@@ -7926,85 +7926,183 @@
                                     {
                                         if (dtDelivers != null)
                                         {
-                                            foreach (DataRow dr in dtDelivers.Rows)
+                                            if (dtDelivers.Rows.Count > 0)
                                             {
-                                                string Prodsno = dr["Product_sno"].ToString();
-                                                string Psno = o.Productsno;
-
-                                                if (Prodsno == Psno)
+                                                //modification for addning new product from existing indent for updating sale,closing branch_acc,agent_bal_trans  akbar & ravindra 
+                                                DataRow[] drdelivary = dtDelivers.Select("Product_sno='" + o.Productsno + "'");
+                                                if (drdelivary.Length <= 0)
                                                 {
-                                                    float Aqty = 0;
-                                                    float.TryParse(dr["DeliveryQty"].ToString(), out Aqty);
-                                                    float Eqty = 0;
-                                                    float.TryParse(o.ReturnQty, out Eqty);
-                                                    float Lqty = 0;
-                                                    float.TryParse(o.LeakQty, out Lqty);
-                                                    float TQty = Aqty - Eqty;
-                                                    if (TQty >= 1)
+                                                    double oqty = 0;
+                                                    double.TryParse(o.ReturnQty, out oqty);
+                                                    double orate = 0;
+                                                    double.TryParse(o.orderunitRate, out orate);
+                                                    double TotIndentcost = oqty * orate;
+                                                    cmd = new MySqlCommand("Update branchaccounts set Amount=Amount+@Amount where BranchId=@BranchId");
+                                                    cmd.Parameters.AddWithValue("@Amount", TotIndentcost);
+                                                    cmd.Parameters.AddWithValue("@BranchId", b_bid);
+                                                    if (vdm.Update(cmd) == 0)
                                                     {
-                                                        float TotIndentcost = TQty * UnitCost;
-                                                        cmd = new MySqlCommand("Update branchaccounts set Amount=Amount-@Amount where BranchId=@BranchId");
+                                                        cmd = new MySqlCommand("Insert Into branchaccounts(Amount,BranchId) values(@Amount,@BranchId)");
                                                         cmd.Parameters.AddWithValue("@Amount", TotIndentcost);
                                                         cmd.Parameters.AddWithValue("@BranchId", b_bid);
-                                                        if (vdm.Update(cmd) == 0)
+                                                        vdm.insert(cmd);
+                                                    }
+                                                    cmd = new MySqlCommand("UPDATE agent_bal_trans set salesvalue=salesvalue+@Amount, clo_balance=clo_balance+@Amount  where agentid=@BranchId AND inddate=@inddate");
+                                                    cmd.Parameters.AddWithValue("@inddate", loginindentdate);
+                                                    cmd.Parameters.AddWithValue("@Amount", TotIndentcost);
+                                                    cmd.Parameters.AddWithValue("@BranchId", b_bid);
+                                                    if (vdm.Update(cmd) == 0)
+                                                    {
+                                                        cmd = new MySqlCommand("Insert Into agent_bal_trans(agentid, opp_balance, inddate, salesvalue,  clo_balance, createdate, entryby,Paidamount) values (@BranchId,@opp_balance,@inddate, @salesvalue, @clo_balance, @createdate, @entryby,@Paidamount)");
+                                                        cmd.Parameters.AddWithValue("@BranchId", b_bid);
+                                                        cmd.Parameters.AddWithValue("@opp_balance", 0);
+                                                        cmd.Parameters.AddWithValue("@inddate", loginindentdate);
+                                                        cmd.Parameters.AddWithValue("@salesvalue", TotIndentcost);
+                                                        cmd.Parameters.AddWithValue("@Paidamount", 0);
+                                                        cmd.Parameters.AddWithValue("@clo_balance", TotIndentcost);
+                                                        cmd.Parameters.AddWithValue("@createdate", ServerDateCurrentdate);
+                                                        cmd.Parameters.AddWithValue("@entryby", Username);
+                                                        vdm.insert(cmd);
+                                                    }
+                                                }//modification for addning new product from existing indent for updating sale,closing branch_acc,agent_bal_trans  akbar & ravindra 
+                                                foreach (DataRow dr in dtDelivers.Rows)
+                                                {
+                                                    string Prodsno = dr["Product_sno"].ToString();
+                                                    string Psno = o.Productsno;
+                                                    if (Prodsno == Psno)
+                                                    {
+                                                        float Aqty = 0;
+                                                        float.TryParse(dr["DeliveryQty"].ToString(), out Aqty);
+                                                        float Eqty = 0;
+                                                        float.TryParse(o.ReturnQty, out Eqty);
+                                                        float Lqty = 0;
+                                                        float.TryParse(o.LeakQty, out Lqty);
+                                                        float TQty = Aqty - Eqty;
+                                                        if (TQty >= 1)
                                                         {
-                                                            cmd = new MySqlCommand("Insert Into branchaccounts(Amount,BranchId) values(@Amount,@BranchId)");
+                                                            float TotIndentcost = TQty * UnitCost;
+                                                            cmd = new MySqlCommand("Update branchaccounts set Amount=Amount-@Amount where BranchId=@BranchId");
                                                             cmd.Parameters.AddWithValue("@Amount", TotIndentcost);
                                                             cmd.Parameters.AddWithValue("@BranchId", b_bid);
-                                                            vdm.insert(cmd);
-                                                        }
-                                                        cmd = new MySqlCommand("UPDATE agent_bal_trans set salesvalue=salesvalue-@Amount, clo_balance=clo_balance-@Amount  where agentid=@BranchId AND inddate=@inddate");
-                                                        cmd.Parameters.AddWithValue("@inddate", loginindentdate);
-                                                        cmd.Parameters.AddWithValue("@Amount", TotIndentcost);
-                                                        cmd.Parameters.AddWithValue("@BranchId", b_bid);
-                                                        if (vdm.Update(cmd) == 0)
-                                                        {
-                                                            cmd = new MySqlCommand("Insert Into agent_bal_trans(agentid, opp_balance, inddate, salesvalue,  clo_balance, createdate, entryby,Paidamount) values (@BranchId,@opp_balance,@inddate, @salesvalue, @clo_balance, @createdate, @entryby,@Paidamount)");
-                                                            cmd.Parameters.AddWithValue("@BranchId", b_bid);
-                                                            cmd.Parameters.AddWithValue("@opp_balance", 0);
+                                                            if (vdm.Update(cmd) == 0)
+                                                            {
+                                                                cmd = new MySqlCommand("Insert Into branchaccounts(Amount,BranchId) values(@Amount,@BranchId)");
+                                                                cmd.Parameters.AddWithValue("@Amount", TotIndentcost);
+                                                                cmd.Parameters.AddWithValue("@BranchId", b_bid);
+                                                                vdm.insert(cmd);
+                                                            }
+                                                            cmd = new MySqlCommand("UPDATE agent_bal_trans set salesvalue=salesvalue-@Amount, clo_balance=clo_balance-@Amount  where agentid=@BranchId AND inddate=@inddate");
                                                             cmd.Parameters.AddWithValue("@inddate", loginindentdate);
-                                                            cmd.Parameters.AddWithValue("@salesvalue", TotIndentcost);
-                                                            cmd.Parameters.AddWithValue("@Paidamount", 0);
-                                                            cmd.Parameters.AddWithValue("@clo_balance", TotIndentcost);
-                                                            cmd.Parameters.AddWithValue("@createdate", ServerDateCurrentdate);
-                                                            cmd.Parameters.AddWithValue("@entryby", Username);
-                                                            vdm.insert(cmd);
-                                                        }
-                                                    }
-                                                    else
-                                                    {
-                                                        TQty = Math.Abs(TQty);
-                                                        float TotIndentcost = TQty * UnitCost;
-                                                        cmd = new MySqlCommand("Update branchaccounts set Amount=Amount+@Amount where BranchId=@BranchId");
-                                                        cmd.Parameters.AddWithValue("@Amount", TotIndentcost);
-                                                        cmd.Parameters.AddWithValue("@BranchId", b_bid);
-                                                        if (vdm.Update(cmd) == 0)
-                                                        {
-                                                            cmd = new MySqlCommand("Insert Into branchaccounts(Amount,BranchId) values(@Amount,@BranchId)");
                                                             cmd.Parameters.AddWithValue("@Amount", TotIndentcost);
                                                             cmd.Parameters.AddWithValue("@BranchId", b_bid);
-                                                            vdm.insert(cmd);
+                                                            if (vdm.Update(cmd) == 0)
+                                                            {
+                                                                cmd = new MySqlCommand("Insert Into agent_bal_trans(agentid, opp_balance, inddate, salesvalue,  clo_balance, createdate, entryby,Paidamount) values (@BranchId,@opp_balance,@inddate, @salesvalue, @clo_balance, @createdate, @entryby,@Paidamount)");
+                                                                cmd.Parameters.AddWithValue("@BranchId", b_bid);
+                                                                cmd.Parameters.AddWithValue("@opp_balance", 0);
+                                                                cmd.Parameters.AddWithValue("@inddate", loginindentdate);
+                                                                cmd.Parameters.AddWithValue("@salesvalue", TotIndentcost);
+                                                                cmd.Parameters.AddWithValue("@Paidamount", 0);
+                                                                cmd.Parameters.AddWithValue("@clo_balance", TotIndentcost);
+                                                                cmd.Parameters.AddWithValue("@createdate", ServerDateCurrentdate);
+                                                                cmd.Parameters.AddWithValue("@entryby", Username);
+                                                                vdm.insert(cmd);
+                                                            }
                                                         }
-                                                        cmd = new MySqlCommand("UPDATE agent_bal_trans set salesvalue=salesvalue+@Amount, clo_balance=clo_balance+@Amount  where agentid=@BranchId AND inddate=@inddate");
-                                                        cmd.Parameters.AddWithValue("@inddate", loginindentdate);
-                                                        cmd.Parameters.AddWithValue("@Amount", TotIndentcost);
-                                                        cmd.Parameters.AddWithValue("@BranchId", b_bid);
-                                                        if (vdm.Update(cmd) == 0)
+                                                        else
                                                         {
-                                                            cmd = new MySqlCommand("Insert Into agent_bal_trans(agentid, opp_balance, inddate, salesvalue,  clo_balance, createdate, entryby,Paidamount) values (@BranchId,@opp_balance,@inddate, @salesvalue, @clo_balance, @createdate, @entryby,@Paidamount)");
+                                                            TQty = Math.Abs(TQty);
+                                                            float TotIndentcost = TQty * UnitCost;
+                                                            cmd = new MySqlCommand("Update branchaccounts set Amount=Amount+@Amount where BranchId=@BranchId");
+                                                            cmd.Parameters.AddWithValue("@Amount", TotIndentcost);
                                                             cmd.Parameters.AddWithValue("@BranchId", b_bid);
-                                                            cmd.Parameters.AddWithValue("@opp_balance", 0);
+                                                            if (vdm.Update(cmd) == 0)
+                                                            {
+                                                                cmd = new MySqlCommand("Insert Into branchaccounts(Amount,BranchId) values(@Amount,@BranchId)");
+                                                                cmd.Parameters.AddWithValue("@Amount", TotIndentcost);
+                                                                cmd.Parameters.AddWithValue("@BranchId", b_bid);
+                                                                vdm.insert(cmd);
+                                                            }
+                                                            cmd = new MySqlCommand("UPDATE agent_bal_trans set salesvalue=salesvalue+@Amount, clo_balance=clo_balance+@Amount  where agentid=@BranchId AND inddate=@inddate");
                                                             cmd.Parameters.AddWithValue("@inddate", loginindentdate);
-                                                            cmd.Parameters.AddWithValue("@salesvalue", TotIndentcost);
-                                                            cmd.Parameters.AddWithValue("@Paidamount", 0);
-                                                            cmd.Parameters.AddWithValue("@clo_balance", TotIndentcost);
-                                                            cmd.Parameters.AddWithValue("@createdate", ServerDateCurrentdate);
-                                                            cmd.Parameters.AddWithValue("@entryby", Username);
-                                                            vdm.insert(cmd);
+                                                            cmd.Parameters.AddWithValue("@Amount", TotIndentcost);
+                                                            cmd.Parameters.AddWithValue("@BranchId", b_bid);
+                                                            if (vdm.Update(cmd) == 0)
+                                                            {
+                                                                cmd = new MySqlCommand("Insert Into agent_bal_trans(agentid, opp_balance, inddate, salesvalue,  clo_balance, createdate, entryby,Paidamount) values (@BranchId,@opp_balance,@inddate, @salesvalue, @clo_balance, @createdate, @entryby,@Paidamount)");
+                                                                cmd.Parameters.AddWithValue("@BranchId", b_bid);
+                                                                cmd.Parameters.AddWithValue("@opp_balance", 0);
+                                                                cmd.Parameters.AddWithValue("@inddate", loginindentdate);
+                                                                cmd.Parameters.AddWithValue("@salesvalue", TotIndentcost);
+                                                                cmd.Parameters.AddWithValue("@Paidamount", 0);
+                                                                cmd.Parameters.AddWithValue("@clo_balance", TotIndentcost);
+                                                                cmd.Parameters.AddWithValue("@createdate", ServerDateCurrentdate);
+                                                                cmd.Parameters.AddWithValue("@entryby", Username);
+                                                                vdm.insert(cmd);
+                                                            }
                                                         }
                                                     }
+                                                    else //akbar 
+                                                    {
+                                                        
+                                                    }//akbar 
                                                 }
                                             }
+                                            else
+                                            {
+                                                double oqty = 0;
+                                                double.TryParse(o.ReturnQty, out oqty);
+                                                double orate = 0;
+                                                double.TryParse(o.orderunitRate, out orate);
+                                                double TotIndentcost = oqty * orate;
+                                                TotIndentcost = Math.Round(TotIndentcost, 2);
+                                                cmd = new MySqlCommand("Update branchaccounts set Amount=Amount+@Amount where BranchId=@BranchId");
+                                                cmd.Parameters.AddWithValue("@Amount", TotIndentcost);
+                                                cmd.Parameters.AddWithValue("@BranchId", b_bid);
+                                                if (vdm.Update(cmd) == 0)
+                                                {
+                                                    cmd = new MySqlCommand("Insert Into branchaccounts(Amount,BranchId) values(@Amount,@BranchId)");
+                                                    cmd.Parameters.AddWithValue("@Amount", TotIndentcost);
+                                                    cmd.Parameters.AddWithValue("@BranchId", b_bid);
+                                                    vdm.insert(cmd);
+                                                }
+                                                string opbal = "0";
+                                                string clobal = "0";
+                                                cmd = new MySqlCommand("SELECT MAX(sno) as sno FROM agent_bal_trans WHERE agentid=@agentid");
+                                                cmd.Parameters.AddWithValue("@agentid", b_bid);
+                                                DataTable dtagentbal = vdm.SelectQuery(cmd).Tables[0];
+                                                if (dtagentbal.Rows.Count > 0)
+                                                {
+                                                    string sno = dtagentbal.Rows[0]["sno"].ToString();
+                                                    cmd = new MySqlCommand("SELECT  opp_balance, clo_balance FROM agent_bal_trans WHERE sno=@sno");
+                                                    cmd.Parameters.AddWithValue("@sno", sno);
+                                                    DataTable dtopbal = vdm.SelectQuery(cmd).Tables[0];
+                                                    if (dtopbal.Rows.Count > 0)
+                                                    {
+                                                        opbal = dtopbal.Rows[0]["opp_balance"].ToString();
+                                                        clobal = dtopbal.Rows[0]["clo_balance"].ToString();
+                                                    }
+                                                }
+                                                cmd = new MySqlCommand("UPDATE agent_bal_trans set salesvalue=salesvalue+@Amount, clo_balance=clo_balance+@Amount  where agentid=@BranchId AND inddate=@inddate");
+                                                cmd.Parameters.AddWithValue("@inddate", loginindentdate);
+                                                cmd.Parameters.AddWithValue("@Amount", TotIndentcost);
+                                                cmd.Parameters.AddWithValue("@BranchId", b_bid);
+                                                if (vdm.Update(cmd) == 0)
+                                                {
+                                                    double clsval = Convert.ToDouble(clobal) + TotIndentcost;
+                                                    cmd = new MySqlCommand("Insert Into agent_bal_trans(agentid, opp_balance, inddate, salesvalue,  clo_balance, createdate, entryby,Paidamount) values (@BranchId,@opp_balance,@inddate, @salesvalue, @clo_balance, @createdate, @entryby,@Paidamount)");
+                                                    cmd.Parameters.AddWithValue("@BranchId", b_bid);
+                                                    cmd.Parameters.AddWithValue("@opp_balance", clobal);
+                                                    cmd.Parameters.AddWithValue("@inddate", loginindentdate);
+                                                    cmd.Parameters.AddWithValue("@salesvalue", TotIndentcost);
+                                                    cmd.Parameters.AddWithValue("@Paidamount", 0);
+                                                    cmd.Parameters.AddWithValue("@clo_balance", clsval);
+                                                    cmd.Parameters.AddWithValue("@createdate", ServerDateCurrentdate);
+                                                    cmd.Parameters.AddWithValue("@entryby", Username);
+                                                    vdm.insert(cmd);
+                                                }
+                                            }//akbar & ravindra
+
                                         }
                                         else
                                         {
