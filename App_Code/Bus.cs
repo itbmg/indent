@@ -6488,7 +6488,7 @@
                             double clsvalue = Convert.ToDouble(closingbalance);
                             double closingvalue = total - TotPaidAmount;
                             string inddate = dtagentmaxtransvalues.Rows[0]["inddate"].ToString();
-                            cmd = new MySqlCommand("UPDATE agent_bal_trans SET paidamount=@paidamount, clo_balance=@closing where sno=@refno");
+                            cmd = new MySqlCommand("UPDATE agent_bal_trans SET paidamount=paidamount+@paidamount, clo_balance=@closing where sno=@refno");
                             cmd.Parameters.AddWithValue("@paidamount", TotPaidAmount);
                             cmd.Parameters.AddWithValue("@refno", maxsno);
                             cmd.Parameters.AddWithValue("@closing", closingvalue);
@@ -6572,21 +6572,11 @@
                                         DataTable dtagenttrans = vdm.SelectQuery(cmd).Tables[0];
                                         if (dtagenttrans.Rows.Count > 0)
                                         {
-                                            //foreach (DataRow dra in dtagenttrans.Rows)
-                                            //{
-                                            string oppbalance = dtagenttrans.Rows[0]["opp_balance"].ToString();
-                                            string salesvalue = dtagenttrans.Rows[0]["salesvalue"].ToString();
-                                            double total = Convert.ToDouble(oppbalance) + Convert.ToDouble(salesvalue);
-                                            string closingbalance = dtagenttrans.Rows[0]["clo_balance"].ToString();
-                                            double clsvalue = Convert.ToDouble(closingbalance);
-                                            double closingvalue = clsvalue - diffamt;
-                                            string inddate = dtagenttrans.Rows[0]["inddate"].ToString();
                                             cmd = new MySqlCommand("UPDATE agent_bal_trans SET paidamount=paidamount+@paidamount, clo_balance=clo_balance-@clo_balance where sno=@refno");
                                             cmd.Parameters.AddWithValue("@paidamount", diffamt);
                                             cmd.Parameters.AddWithValue("@refno", maxsno);
                                             cmd.Parameters.AddWithValue("@clo_balance", diffamt);
                                             vdm.Update(cmd);
-                                            //}
                                         }
                                     }
                                     else
@@ -6624,21 +6614,11 @@
                                     DataTable dtagenttrans = vdm.SelectQuery(cmd).Tables[0];
                                     if (dtagenttrans.Rows.Count > 0)
                                     {
-                                        //foreach (DataRow dra in dtagenttrans.Rows)
-                                        //{
-                                        string oppbalance = dtagenttrans.Rows[0]["opp_balance"].ToString();
-                                        string salesvalue = dtagenttrans.Rows[0]["salesvalue"].ToString();
-                                        double total = Convert.ToDouble(oppbalance) + Convert.ToDouble(salesvalue);
-                                        string closingbalance = dtagenttrans.Rows[0]["clo_balance"].ToString();
-                                        double clsvalue = Convert.ToDouble(closingbalance);
-                                        double closingvalue = clsvalue - diffamt;
-                                        string inddate = dtagenttrans.Rows[0]["inddate"].ToString();
                                         cmd = new MySqlCommand("UPDATE agent_bal_trans SET paidamount=paidamount-@paidamount, clo_balance=clo_balance+@clo_balance where sno=@refno");
                                         cmd.Parameters.AddWithValue("@paidamount", diffamt);
                                         cmd.Parameters.AddWithValue("@refno", maxsno);
                                         cmd.Parameters.AddWithValue("@clo_balance", diffamt);
                                         vdm.Update(cmd);
-                                        //}
                                     }
                                 }
                             }

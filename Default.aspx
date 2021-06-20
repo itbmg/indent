@@ -2936,9 +2936,7 @@
                 $('#txtPaidAmount').focus();
                 return false;
             }
-            if (!confirm("Do you really want Save")) {
-                return false;
-            }
+            
             var BranchName = document.getElementById('ddlBranchName').value;
             var ddlPayMentType = document.getElementById('ddlPaymntType').value;
             var IndentNo = HdnIndentNo;
@@ -2951,9 +2949,26 @@
                     if ($(this).closest("tr").find(".CashClass").text() == "") {
                     }
                     else {
-                        DenominationString += $(this).closest("tr").find(".CashClass").text() + 'x' + $(this).closest("tr").find(".qtyclass").val() + "+";
+                        //// If Client need this feature we can enable --06/20/2021
+                      ////  DenominationString += $(this).closest("tr").find(".CashClass").text() + 'x' + $(this).closest("tr").find(".qtyclass").val() + "+";
                     }
                 });
+            }
+            var rowInventory = $("#tableInventory tr:gt(0)");
+            var Inventorydetails = new Array();
+            $(rowInventory).each(function (i, obj) {
+                if ($(this).find('#txtSno').text() == "" || $(this).find('#txtReceivedQty').val() == "") {
+                }
+                else {
+                    Inventorydetails.push({ SNo: $(this).find('#txtSno').text(), InvSno: $(this).find('#hdnInvSno').val(), ReceivedQty: $(this).find('#txtReceivedQty').val(), BalanceQty: $(this).find('#txtbalanceQty').text() });
+                }
+            });
+            if (Inventorydetails.length == 0) {
+                alert("Please Fill Inventory Qty");
+                return false;
+            }
+            if (!confirm("Do you really want Save")) {
+                return false;
             }
             if (ddlPayMentType == "Cheque") {
                 DenominationString = document.getElementById('txtchequeNo').value;
