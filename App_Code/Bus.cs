@@ -6469,7 +6469,7 @@
                         cmd.Parameters.AddWithValue("@sno", maxsno);
                         DataTable dtagentmaxtransvalues = vdm.SelectQuery(cmd).Tables[0];
 
-                        cmd = new MySqlCommand("SELECT agentid, opp_balance, inddate, salesvalue, clo_balance FROM agent_bal_trans WHERE agentid=@agentid AND inddate between @d1 and @d2");
+                        cmd = new MySqlCommand("SELECT agentid, opp_balance, inddate,paidamount, salesvalue, clo_balance FROM agent_bal_trans WHERE agentid=@agentid AND inddate between @d1 and @d2");
                         cmd.Parameters.AddWithValue("@agentid", b_bid);
                         cmd.Parameters.AddWithValue("@d1", GetLowDate(dt_indDate));
                         cmd.Parameters.AddWithValue("@d2", GetHighDate(dt_indDate));
