@@ -6376,9 +6376,6 @@
                 if (btnvalue == "Save")
                 {
                     //Receipt
-
-
-
                     cmd = new MySqlCommand("Select IFNULL(MAX(Receipt),0)+1 as Sno  from cashreceipts where BranchID=@BranchID AND (DOE BETWEEN @d1 AND @d2)");
                     cmd.Parameters.AddWithValue("@BranchID", context.Session["BranchSno"].ToString());
                     cmd.Parameters.AddWithValue("@d1", GetLowDate(dtapril));
@@ -6405,11 +6402,11 @@
                     cmd.Parameters.AddWithValue("DOE", dtindDate.AddDays(1));
                     //cmd.Parameters.Add("DOE", dtCdate);
 
-                    cmd.Parameters.Add("@Create_by", context.Session["UserSno"].ToString());
-                    cmd.Parameters.Add("@Remarks", "Sale Of Milk");
-                    cmd.Parameters.Add("@OppBal", TotPaidAmount);
-                    cmd.Parameters.Add("@Receipt", CashReceiptNo);
-                    cmd.Parameters.Add("@Tripid", context.Session["TripdataSno"].ToString());
+                    cmd.Parameters.AddWithValue("@Create_by", context.Session["UserSno"].ToString());
+                    cmd.Parameters.AddWithValue("@Remarks", "Sale Of Milk");
+                    cmd.Parameters.AddWithValue("@OppBal", TotPaidAmount);
+                    cmd.Parameters.AddWithValue("@Receipt", CashReceiptNo);
+                    cmd.Parameters.AddWithValue("@Tripid", context.Session["TripdataSno"].ToString());
                     if (TotPaidAmount != 0.0)
                     {
                         vdm.insert(cmd);
@@ -6479,29 +6476,30 @@
                         DataTable dtIndentbal = vdm.SelectQuery(cmd).Tables[0];
                         if (dtIndentbal.Rows.Count > 0)
                         {
-                            //foreach (DataRow dra in dtagenttrans.Rows)
-                            //{
                             string oppbalance = dtagentmaxtransvalues.Rows[0]["opp_balance"].ToString();
                             string salesvalue = dtagentmaxtransvalues.Rows[0]["salesvalue"].ToString();
+                            double Prev_amount = 0;
+                            double.TryParse(dtagentmaxtransvalues.Rows[0]["paidamount"].ToString(), out Prev_amount);
+                            if (Prev_amount > 0)
+                            {
+                                TotPaidAmount = TotPaidAmount + Prev_amount;
+                            }
                             double total = Convert.ToDouble(oppbalance) + Convert.ToDouble(salesvalue);
                             string closingbalance = dtagentmaxtransvalues.Rows[0]["clo_balance"].ToString();
                             double clsvalue = Convert.ToDouble(closingbalance);
                             double closingvalue = total - TotPaidAmount;
                             string inddate = dtagentmaxtransvalues.Rows[0]["inddate"].ToString();
-                            cmd = new MySqlCommand("UPDATE agent_bal_trans SET paidamount=paidamount+@paidamount, clo_balance=@closing where sno=@refno");
+                            cmd = new MySqlCommand("UPDATE agent_bal_trans SET paidamount=@paidamount, clo_balance=@closing where sno=@refno");
                             cmd.Parameters.AddWithValue("@paidamount", TotPaidAmount);
                             cmd.Parameters.AddWithValue("@refno", maxsno);
                             cmd.Parameters.AddWithValue("@closing", closingvalue);
                             vdm.Update(cmd);
-                            //}
                         }
                         else
                         {
                             string closingbalance = dtagentmaxtransvalues.Rows[0]["clo_balance"].ToString();
                             double clsvalue = Convert.ToDouble(closingbalance);
                             double closingvalue = clsvalue - TotPaidAmount;
-
-
                             cmd = new MySqlCommand("UPDATE agent_bal_trans set  clo_balance=clo_balance-@clAmount  where agentid=@BranchId AND inddate=@inddate");
                             cmd.Parameters.AddWithValue("@BranchId", b_bid);
                             cmd.Parameters.AddWithValue("@inddate", dt_indDate);
