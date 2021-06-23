@@ -6465,7 +6465,7 @@
 
                         string indDate = context.Session["I_Date"].ToString();
                         DateTime dt_indDate = Convert.ToDateTime(indDate);
-                        cmd = new MySqlCommand("SELECT agentid, opp_balance, inddate, salesvalue, clo_balance FROM agent_bal_trans WHERE sno=@sno");
+                        cmd = new MySqlCommand("SELECT agentid, opp_balance, paidamount, inddate, salesvalue, clo_balance FROM agent_bal_trans WHERE sno=@sno");
                         cmd.Parameters.AddWithValue("@sno", maxsno);
                         DataTable dtagentmaxtransvalues = vdm.SelectQuery(cmd).Tables[0];
 
