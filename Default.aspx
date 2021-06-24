@@ -111,11 +111,14 @@
                         if (count > 1) {
                             $('#divRouteOrder').css('display', 'block');
                             $('#divDeliverReport').css('display', 'block');
+                            $('#divInventaryReport').css('display', 'block');
+                            
                             FillDispatchRoutes();
                         }
                         else {
                             $('#divRouteOrder').css('display', 'none');
                             $('#divDeliverReport').css('display', 'block');
+                            $('#divInventaryReport').css('display', 'block');
                             FillDispatchBrach();
                         }
                         break;
@@ -278,6 +281,7 @@
                             $('#divShortage').css('display', 'block');
                             $('#divVerifyInventory').css('display', 'block');
                             $('#divDeliverReport').css('display', 'none');
+                            $('#divInventaryReport').css('display', 'none');
 
                             //                            var ddlDispatch = document.getElementById('ddlDispatchType').value;
                             //                            if (ddlDispatch == "Dispatch") {
@@ -2460,6 +2464,7 @@
             $('#tableEmployee').css('display', 'none');
 //            $('#DivDispDate').css('display', 'none');
             $('#divDeliverReport').css('display', 'none');
+            $('#divInventaryReport').css('display', 'none');
             
 ////            $('#divFillScreen').setTemplateURL('Reporting8.htm');
             ////            $('#divFillScreen').processTemplate();
@@ -2575,7 +2580,7 @@
             $('#divRouteOrder').css('display', 'none');
             $('#divHide').css('display', 'none');
             $('#divFillScreen').css('display', 'block');
-            var data = { 'op': 'DeliverReportclick'};
+            var data = { 'op': 'InventaryReportclick' };
             var s = function (msg) {
                 if (msg) {
                     if (msg == "Session Expired") {
@@ -2603,6 +2608,67 @@
              });
              document.getElementById('txt_totqty').innerHTML = parseFloat(TotalAmount).toFixed(2);
         }
+
+        function divInventaryReportclick() {
+            $('#tableOrder').css('display', 'none');
+            $('#divback').css('display', 'block');
+            $('#divRouteOrder').css('display', 'none');
+            $('#divHide').css('display', 'none');
+            $('#divFillScreen').css('display', 'block');
+            var data = { 'op': 'InventaryReportclick' };
+            var s = function (msg) {
+                if (msg) {
+                    if (msg == "Session Expired") {
+                        alert(msg);
+                        window.location = "Login.aspx";
+                    }
+                    bindinventorydetailsreport(msg);
+                    //$('#divFillScreen').removeTemplate();
+                    //$('#divFillScreen').setTemplateURL('InventaryReport.htm');
+                    //$('#divFillScreen').processTemplate(msg);
+                    
+                }
+                else {
+                }
+            };
+            var e = function (x, h, e) {
+            };
+            $(document).ajaxStart($.blockUI).ajaxStop($.unblockUI);
+            callHandler(data, s, e);
+        }
+
+        function bindinventorydetailsreport(msg) {
+            //$('#divFillScreen').removeTemplate();
+            $('#divFillScreen').setTemplateURL('InventaryReport.htm');
+            $('#divFillScreen').processTemplate(msg);
+            $('.Opp_bal').each(function (i, obj) {
+                TotalOpp += parseFloat($(this).text());
+            })
+            var TotalOpp = 0; var TotalIssue = 0; var TotalReceived = 0; var TotalClosing = 0;
+
+            $('.OppbalClass').each(function (i, obj) {
+                TotalOpp += parseFloat($(this).text());
+            });
+            document.getElementById('spnOpp').innerHTML = parseFloat(TotalOpp).toFixed(2);
+            
+            $('.IssuedCratesClass').each(function (i, obj) {
+                TotalIssue += parseFloat($(this).text());
+            });
+            document.getElementById('spnIssued').innerHTML = parseFloat(TotalIssue).toFixed(2);
+
+            $('.ReceivedCratesClass').each(function (i, obj) {
+                TotalReceived += parseFloat($(this).text());
+            });
+            document.getElementById('spnReceived').innerHTML = parseFloat(TotalReceived).toFixed(2);
+
+            $('.CloBalClass').each(function (i, obj) {
+                TotalClosing += parseFloat($(this).text());
+            });
+            document.getElementById('spnClo').innerHTML = parseFloat(TotalClosing).toFixed(2);
+        }
+
+       
+
         function btnReportingSaveClick() {
             var Remarks = document.getElementById('txtRemarks').value;
             if (Remarks == "") {
@@ -2669,6 +2735,7 @@
                 $('#divShortage').css('display', 'block');
                 $('#divVerifyInventory').css('display', 'block');
                 $('#divDeliverReport').css('display', 'none');
+                $('#divInventaryReport').css('display', 'none');
                 $('#divInvReporting').css('display', 'none');
                 $('#divAmountReporting').css('display', 'none');
                 
@@ -2730,6 +2797,7 @@
                 $('#divInvReporting').css('display', 'none');
                 $('#divAmountReporting').css('display', 'none');
                 $('#divDeliverReport').css('display', 'none');
+                $('#divInventaryReport').css('display', 'none');
             }
             else {
                 DairyStatus = "";
@@ -2755,6 +2823,7 @@
                 $('#divAmountReporting').css('display', 'none');
                 $('#divDeliverReport').css('display', 'block');
                 $('#divDeliverReport').css('display', 'block');
+                $('#divInventaryReport').css('display', 'block');
                 if (count > 1) {
                     $('#divRouteOrder').css('display', 'block');
                 }
@@ -2788,6 +2857,7 @@
                     $('#divInvReporting').css('display', 'none');
                     $('#divAmountReporting').css('display', 'none');
                     $('#divDeliverReport').css('display', 'none');
+                    $('#divInventaryReport').css('display', 'none');
                     GetBranchStatus(ddlroute);
                 }
             }
@@ -3750,6 +3820,7 @@
             $('#tableEmployee').css('display', 'none');
 //            $('#DivPlantDispatch').css('display', 'block');
             $('#divDeliverReport').css('display', 'none');
+            $('#divInventaryReport').css('display', 'none');
             $('#divSalesOfficeDespatch').css('display', 'none');
             $('#divSpacialSale').css('display', 'none');
             $('#divFinalDC').css('display', 'none');
@@ -4813,6 +4884,9 @@
             </div>
              <div id="divDeliverReport" style="display:none;">
                 <input type="button" value="Delivery Report" id="Button7" class="inputButton" onclick=" return divDeliverReportclick();" />
+            </div>
+            <div id="divInventaryReport" style="display:none;">
+                <input type="button" value="Inventory Report" id="Button21" class="inputButton" onclick=" return divInventaryReportclick();" />
             </div>
              <div id="divDispatch" style="display:none;">
                 <input type="button" value="Dispatch" id="btnDispatch" class="inputButton" onclick=" return divDispatchclick();" />
