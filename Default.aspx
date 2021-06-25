@@ -3053,6 +3053,8 @@
                     if (msg == "Session Expired") {
                         window.location = "Login.aspx";
                     }
+                    ////window.location.reload();
+                    divCollectionsclick();
                 }
                 else {
                 }
@@ -3593,7 +3595,8 @@
                     if (msg == "Session Expired") {
                         window.location = "Login.aspx";
                     }
-
+                    ////window.location.reload();
+                    divDeliveryclick();
                 }
                 else {
                 }
