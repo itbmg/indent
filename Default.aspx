@@ -2315,7 +2315,7 @@
                         document.getElementById('BtnSave').value = "Edit";
                         document.getElementById('txtPaidAmount').value = msg;
                         var txtTodayAmont = document.getElementById('txtTodayAmont').innerHTML;
-                        document.getElementById('txtPaidAmount').disabled = true;
+                       //// document.getElementById('txtPaidAmount').disabled = true;
                         var PaidAmount = document.getElementById('txtPaidAmount').value;
                         if (txtTodayAmont == "                ") {
                             txtTodayAmont = "0";
@@ -3048,7 +3048,7 @@
                 if (msg) {
                     CollectionInventrySaveClick();
                     alert(msg);
-                    document.getElementById('txtPaidAmount').disabled = true;
+                   // document.getElementById('txtPaidAmount').disabled = true;
                     document.getElementById('BtnSave').value = "Edit";
                     if (msg == "Session Expired") {
                         window.location = "Login.aspx";
@@ -4415,7 +4415,7 @@
                 $(".LeakQtyclass").attr("disabled", false);
                 document.getElementById('BtnSave').value = "Save";
                 SaveType = "Edit";
-                document.getElementById('txtPaidAmount').disabled = false;
+                //document.getElementById('txtPaidAmount').disabled = false;
                 return false;
             }
             if (!confirm("Do you really want Save")) {

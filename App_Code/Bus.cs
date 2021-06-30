@@ -6631,11 +6631,9 @@
                 else
                 {
 
-                    cmd = new MySqlCommand("SELECT Branchid,AmountPaid,Denominations,PaidDate,UserData_sno,PaymentType,tripId, CheckStatus,PayTime, ReceiptNo FROM collections WHERE Branchid=@Branchid AND tripId=@tripId AND PaidDate between @d1 and @d2");
+                    cmd = new MySqlCommand("SELECT Branchid,AmountPaid,Denominations,PaidDate,UserData_sno,PaymentType,tripId, CheckStatus,PayTime, ReceiptNo FROM collections WHERE Branchid=@Branchid AND tripId=@tripId");
                     cmd.Parameters.AddWithValue("@Branchid", b_bid);
                     cmd.Parameters.AddWithValue("@tripId", context.Session["TripdataSno"].ToString());
-                    cmd.Parameters.AddWithValue("@d1", GetLowDate(ServerDateCurrentdate));
-                    cmd.Parameters.AddWithValue("@d2", GetHighDate(ServerDateCurrentdate));
                     DataTable dtcall = vdm.SelectQuery(cmd).Tables[0];
                     if (dtcall.Rows.Count > 0)
                     {
@@ -6658,6 +6656,12 @@
                                     cmd.Parameters.AddWithValue("@Denominations", DenominationString);
                                     cmd.Parameters.AddWithValue("@ReceiptNo", ReceiptNo);
                                     vdm.Update(cmd);
+
+                                    cmd = new MySqlCommand("Update branchaccounts set Amount=Amount+@Amount where BranchId=@BranchId");
+                                    cmd.Parameters.AddWithValue("@Amount", diffamt);
+                                    cmd.Parameters.AddWithValue("@BranchId", b_bid);
+                                    vdm.Update(cmd);
+
                                     cmd = new MySqlCommand("SELECT MAX(sno) as sno FROM agent_bal_trans WHERE agentid=@Branchid");
                                     cmd.Parameters.AddWithValue("@Branchid", b_bid);
                                     DataTable dtagentbaltrans = vdm.SelectQuery(cmd).Tables[0];
@@ -6695,11 +6699,17 @@
                                         cmd.Parameters.AddWithValue("@Denominations", DenominationString);
                                         cmd.Parameters.AddWithValue("@ReceiptNo", ReceiptNo);
                                         vdm.Update(cmd);
+
+
                                     }
                                 }
                             }
                             else
                             {
+                                cmd = new MySqlCommand("Update branchaccounts set Amount=Amount-@Amount where BranchId=@BranchId");
+                                cmd.Parameters.AddWithValue("@Amount", diffamt);
+                                cmd.Parameters.AddWithValue("@BranchId", b_bid);
+                                vdm.Update(cmd);
                                 cmd = new MySqlCommand("SELECT MAX(sno) as sno FROM agent_bal_trans WHERE agentid=@Branchid");
                                 cmd.Parameters.AddWithValue("@Branchid", b_bid);
                                 DataTable dtagentbaltrans = vdm.SelectQuery(cmd).Tables[0];
@@ -6743,32 +6753,17 @@
                     {
                         string Date = DateTime.Now.ToString("dd/MM/yyyy");
                         string BranchSno = context.Session["CsoNo"].ToString();
-                        if (BranchSno == "4609" || BranchSno == "3625" || BranchSno == "2948" || BranchSno == "172" || BranchSno == "282" || BranchSno == "271" || BranchSno == "174" || BranchSno == "3928" || BranchSno == "285" || BranchSno == "527" || BranchSno == "4607" || BranchSno == "306" || BranchSno == "538" || BranchSno == "2749" || BranchSno == "1801")
-                        {
-                            WebClient client = new WebClient();
-                            //string baseurl = "http://www.smsstriker.com/API/sms.php?username=vaishnavidairy&password=vyshnavi@123&from=VYSNVI&to=" + MobNo + "&message=%20" + msg + "&response=Y";
-                            // string strUrl = "http://roundsms.com/api/sendhttp.php?authkey=Y2U3NGE2MGFkM2V&mobiles=" + no + "&message=" + message1 +" &sender=VYSNVI&type=1&route=2";
-                            string baseurl = "http://roundsms.com/api/sendhttp.php?authkey=Y2U3NGE2MGFkM2V&mobiles=" + phonenumber + "&message=Dear%20" + BranchName + "%20Your%20Collection" + TotPaidAmount + "%20for%20today%20Date%20" + Date + "%20if%20any%20changes%20please%20call&sender=VYSNVI&type=1&route=2";
-                            //string baseul = "http://www.smsstriker.com/API/sms.php?username=vaishnavidairy&password=vyshnavi@123&from=VSALES&to=" + phonenumber + "&msg=Dear%20" + BranchName + "%20Your%20Collection" + TotPaidAmount + "%20for%20today%20Date%20" + Date + "%20if%20any%20changes%20please%20call&type=1";
-                            Stream data = client.OpenRead(baseurl);
-                            StreamReader reader = new StreamReader(data);
-                            string ResponseID = reader.ReadToEnd();
-                            data.Close();
-                            reader.Close();
-                        }
-                        else
-                        {
-                            WebClient client = new WebClient();
-                            //string baseurl = "http://www.smsstriker.com/API/sms.php?username=vaishnavidairy&password=vyshnavi@123&from=VYSNVI&to=" + MobNo + "&message=%20" + msg + "&response=Y";
-                            string baseurl = "http://roundsms.com/api/sendhttp.php?authkey=Y2U3NGE2MGFkM2V&mobiles=" + phonenumber + "&message=Dear%20" + BranchName + "%20Your%20Collection" + TotPaidAmount + "%20for%20today%20Date%20" + Date + "%20if%20any%20changes%20please%20call&sender=VYSNVI&type=1&route=2";
-                            //string baseurl = "http://www.smsstriker.com/API/sms.php?username=vaishnavidairy&password=vyshnavi@123&from=VFWYRA&to=" + phonenumber + "&msg=Dear%20" + BranchName + "%20Your%20Collection" + TotPaidAmount + "%20for%20today%20Date%20" + Date + "%20if%20any%20changes%20please%20call&type=1";
-                            Stream data = client.OpenRead(baseurl);
-                            StreamReader reader = new StreamReader(data);
-                            string ResponseID = reader.ReadToEnd();
-                            data.Close();
-                            reader.Close();
-                        }
-
+                         //////WebClient client = new WebClient();
+                         //////   //string baseurl = "http://www.smsstriker.com/API/sms.php?username=vaishnavidairy&password=vyshnavi@123&from=VYSNVI&to=" + MobNo + "&message=%20" + msg + "&response=Y";
+                         //////   // string strUrl = "http://roundsms.com/api/sendhttp.php?authkey=Y2U3NGE2MGFkM2V&mobiles=" + no + "&message=" + message1 +" &sender=VYSNVI&type=1&route=2";
+                         //////   string baseurl = "http://roundsms.com/api/sendhttp.php?authkey=Y2U3NGE2MGFkM2V&mobiles=" + phonenumber + "&message=Dear%20" + BranchName + "%20Your%20Collection" + TotPaidAmount + "%20for%20today%20Date%20" + Date + "%20if%20any%20changes%20please%20call&sender=VYSNVI&type=1&route=2";
+                         //////   //string baseul = "http://www.smsstriker.com/API/sms.php?username=vaishnavidairy&password=vyshnavi@123&from=VSALES&to=" + phonenumber + "&msg=Dear%20" + BranchName + "%20Your%20Collection" + TotPaidAmount + "%20for%20today%20Date%20" + Date + "%20if%20any%20changes%20please%20call&type=1";
+                         //////   Stream data = client.OpenRead(baseurl);
+                         //////   StreamReader reader = new StreamReader(data);
+                         //////   string ResponseID = reader.ReadToEnd();
+                         //////   data.Close();
+                         //////   reader.Close();
+                      
                         string message = " " + phonenumber + " Dear " + BranchName + " Your Collection" + TotPaidAmount + " for today Date " + Date + " if any changes please call ";
                         // string text = message.Replace("\n", "\n" + System.Environment.NewLine);
                         cmd = new MySqlCommand("insert into smsinfo (agentid,branchid, msg,mobileno,msgtype,branchname,doe) values (@agentid,@branchid,@msg,@mobileno,@msgtype,@branchname,@doe)");
