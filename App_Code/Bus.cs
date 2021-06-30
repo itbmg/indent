@@ -6552,7 +6552,10 @@
                     cmd.Parameters.AddWithValue("@PaymentType", PaymentType);
                     cmd.Parameters.AddWithValue("@tripId", context.Session["TripdataSno"].ToString());
                     cmd.Parameters.AddWithValue("@ReceiptNo", CashReceiptNo);
-                    vdm.insert(cmd);
+                    if (TotPaidAmount != 0.0)
+                    {
+                        vdm.insert(cmd);
+                    }
 
                     cmd = new MySqlCommand("Update empaccounts set Amount=Amount+@Amount where EmpID=@EmpID");
                     cmd.Parameters.AddWithValue("@Amount", TotPaidAmount);
@@ -6736,7 +6739,10 @@
                                     cmd.Parameters.AddWithValue("@cashtype", PaymentType + "Edit");
                                     cmd.Parameters.AddWithValue("@doe", ServerDateCurrentdate);
                                     cmd.Parameters.AddWithValue("@entryby", context.Session["UserSno"].ToString());
-                                    vdm.insert(cmd);
+                                    if (diffamt > 0)
+                                    {
+                                        vdm.insert(cmd);
+                                    }
 
                                     cmd = new MySqlCommand("SELECT agentid, opp_balance, inddate, salesvalue, clo_balance FROM agent_bal_trans WHERE sno=@maxsno");
                                     cmd.Parameters.AddWithValue("@maxsno", maxsno);
