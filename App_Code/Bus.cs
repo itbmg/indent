@@ -445,43 +445,84 @@
                 vdm = new VehicleDBMgr();
                 string RouteID = "";
                 string IndentType = context.Request["IndentType"];
+                string ReportType = context.Request["ReportType"];
                 if (IndentType == "")
                 {
                     IndentType = context.Session["IndentType"].ToString();
                 }
                 string Count = context.Session["count"].ToString();
-                if (Count == "1")
+                if (ReportType == "Delivery")
                 {
-                    RouteID = context.Session["RouteId"].ToString();
-                    cmd = new MySqlCommand("SELECT branchdata.BranchName, productsdata.ProductName, indents_subtable.unitQty FROM branchdata INNER JOIN branchroutesubtable ON branchdata.sno = branchroutesubtable.BranchID INNER JOIN indents ON branchdata.sno = indents.Branch_id INNER JOIN indents_subtable ON indents.IndentNo = indents_subtable.IndentNo INNER JOIN productsdata ON indents_subtable.Product_sno = productsdata.sno WHERE (branchroutesubtable.RefNo = @RouteID) AND (indents.I_date BETWEEN @d1 AND @d2) AND (indents.IndentType = @IndentType) GROUP BY branchdata.BranchName, productsdata.ProductName");
+                    if (Count == "1")
+                    {
+                        RouteID = context.Session["RouteId"].ToString();
+                        cmd = new MySqlCommand("SELECT branchdata.BranchName, productsdata.ProductName, indents_subtable.unitQty,indents_subtable.deliveryQty FROM branchdata INNER JOIN branchroutesubtable ON branchdata.sno = branchroutesubtable.BranchID INNER JOIN indents ON branchdata.sno = indents.Branch_id INNER JOIN indents_subtable ON indents.IndentNo = indents_subtable.IndentNo INNER JOIN productsdata ON indents_subtable.Product_sno = productsdata.sno WHERE (branchroutesubtable.RefNo = @RouteID) AND (indents.I_date BETWEEN @d1 AND @d2) AND (indents.IndentType = @IndentType) GROUP BY branchdata.BranchName, productsdata.ProductName");
+                    }
+                    else
+                    {
+                        RouteID = context.Session["RouteId"].ToString();
+                        cmd = new MySqlCommand("SELECT branchdata.BranchName, productsdata.ProductName, indents_subtable.unitQty,indents_subtable.deliveryQty, dispatch_sub.dispatch_sno FROM branchdata INNER JOIN branchroutesubtable ON branchdata.sno = branchroutesubtable.BranchID INNER JOIN indents ON branchdata.sno = indents.Branch_id INNER JOIN indents_subtable ON indents.IndentNo = indents_subtable.IndentNo INNER JOIN productsdata ON indents_subtable.Product_sno = productsdata.sno INNER JOIN dispatch_sub ON branchroutesubtable.RefNo = dispatch_sub.Route_id WHERE (indents.I_date BETWEEN @d1 AND @d2) AND (indents.IndentType = @IndentType) AND (dispatch_sub.dispatch_sno = @RouteID) GROUP BY branchdata.BranchName, productsdata.ProductName, dispatch_sub.dispatch_sno");
+
+                    }
+
+                    string Ind_date = context.Session["I_Date"].ToString();
+                    DateTime dtIndentdate = Convert.ToDateTime(Ind_date);
+                    cmd.Parameters.AddWithValue("@IndentType", IndentType);
+                    cmd.Parameters.AddWithValue("@RouteID", RouteID);
+                    cmd.Parameters.AddWithValue("@d1", DateConverter.GetLowDate(dtIndentdate));
+                    cmd.Parameters.AddWithValue("@d2", DateConverter.GetHighDate(dtIndentdate));
+                    DataTable dtIndentData = vdm.SelectQuery(cmd).Tables[0];
+                    List<IndentClass> Indentlist = new List<IndentClass>();
+                    if (dtIndentData.Rows.Count > 0)
+                    {
+                        foreach (DataRow dr in dtIndentData.Rows)
+                        {
+                            IndentClass GetIndent = new IndentClass();
+                            GetIndent.BranchName = dr["BranchName"].ToString();
+                            GetIndent.unitQty = dr["unitQty"].ToString();
+                            GetIndent.DelQty = dr["deliveryQty"].ToString();
+                            GetIndent.ProductName = dr["ProductName"].ToString();
+                            Indentlist.Add(GetIndent);
+                        }
+                    }
+                    string response = GetJson(Indentlist);
+                    context.Response.Write(response);
                 }
                 else
                 {
-                    RouteID = context.Session["RouteId"].ToString();
-                    cmd = new MySqlCommand("SELECT branchdata.BranchName, productsdata.ProductName, indents_subtable.unitQty, dispatch_sub.dispatch_sno FROM branchdata INNER JOIN branchroutesubtable ON branchdata.sno = branchroutesubtable.BranchID INNER JOIN indents ON branchdata.sno = indents.Branch_id INNER JOIN indents_subtable ON indents.IndentNo = indents_subtable.IndentNo INNER JOIN productsdata ON indents_subtable.Product_sno = productsdata.sno INNER JOIN dispatch_sub ON branchroutesubtable.RefNo = dispatch_sub.Route_id WHERE (indents.I_date BETWEEN @d1 AND @d2) AND (indents.IndentType = @IndentType) AND (dispatch_sub.dispatch_sno = @RouteID) GROUP BY branchdata.BranchName, productsdata.ProductName, dispatch_sub.dispatch_sno");
-
-                }
-
-                DateTime Currentdate = VehicleDBMgr.GetTime(vdm.conn);
-                cmd.Parameters.AddWithValue("@IndentType", IndentType);
-                cmd.Parameters.AddWithValue("@RouteID", RouteID);
-                cmd.Parameters.AddWithValue("@d1", DateConverter.GetLowDate(Currentdate));
-                cmd.Parameters.AddWithValue("@d2", DateConverter.GetHighDate(Currentdate));
-                DataTable dtIndentData = vdm.SelectQuery(cmd).Tables[0];
-                List<IndentClass> Indentlist = new List<IndentClass>();
-                if (dtIndentData.Rows.Count > 0)
-                {
-                    foreach (DataRow dr in dtIndentData.Rows)
+                    if (Count == "1")
                     {
-                        IndentClass GetIndent = new IndentClass();
-                        GetIndent.BranchName = dr["BranchName"].ToString();
-                        GetIndent.unitQty = dr["unitQty"].ToString();
-                        GetIndent.ProductName = dr["ProductName"].ToString();
-                        Indentlist.Add(GetIndent);
+                        RouteID = context.Session["RouteId"].ToString();
+                        cmd = new MySqlCommand("SELECT branchdata.BranchName, productsdata.ProductName, indents_subtable.unitQty FROM branchdata INNER JOIN branchroutesubtable ON branchdata.sno = branchroutesubtable.BranchID INNER JOIN indents ON branchdata.sno = indents.Branch_id INNER JOIN indents_subtable ON indents.IndentNo = indents_subtable.IndentNo INNER JOIN productsdata ON indents_subtable.Product_sno = productsdata.sno WHERE (branchroutesubtable.RefNo = @RouteID) AND (indents.I_date BETWEEN @d1 AND @d2) AND (indents.IndentType = @IndentType) GROUP BY branchdata.BranchName, productsdata.ProductName");
                     }
+                    else
+                    {
+                        RouteID = context.Session["RouteId"].ToString();
+                        cmd = new MySqlCommand("SELECT branchdata.BranchName, productsdata.ProductName, indents_subtable.unitQty, dispatch_sub.dispatch_sno FROM branchdata INNER JOIN branchroutesubtable ON branchdata.sno = branchroutesubtable.BranchID INNER JOIN indents ON branchdata.sno = indents.Branch_id INNER JOIN indents_subtable ON indents.IndentNo = indents_subtable.IndentNo INNER JOIN productsdata ON indents_subtable.Product_sno = productsdata.sno INNER JOIN dispatch_sub ON branchroutesubtable.RefNo = dispatch_sub.Route_id WHERE (indents.I_date BETWEEN @d1 AND @d2) AND (indents.IndentType = @IndentType) AND (dispatch_sub.dispatch_sno = @RouteID) GROUP BY branchdata.BranchName, productsdata.ProductName, dispatch_sub.dispatch_sno");
+
+                    }
+
+                    DateTime Currentdate = VehicleDBMgr.GetTime(vdm.conn);
+                    cmd.Parameters.AddWithValue("@IndentType", IndentType);
+                    cmd.Parameters.AddWithValue("@RouteID", RouteID);
+                    cmd.Parameters.AddWithValue("@d1", DateConverter.GetLowDate(Currentdate));
+                    cmd.Parameters.AddWithValue("@d2", DateConverter.GetHighDate(Currentdate));
+                    DataTable dtIndentData = vdm.SelectQuery(cmd).Tables[0];
+                    List<IndentClass> Indentlist = new List<IndentClass>();
+                    if (dtIndentData.Rows.Count > 0)
+                    {
+                        foreach (DataRow dr in dtIndentData.Rows)
+                        {
+                            IndentClass GetIndent = new IndentClass();
+                            GetIndent.BranchName = dr["BranchName"].ToString();
+                            GetIndent.unitQty = dr["unitQty"].ToString();
+                            GetIndent.ProductName = dr["ProductName"].ToString();
+                            Indentlist.Add(GetIndent);
+                        }
+                    }
+                    string response = GetJson(Indentlist);
+                    context.Response.Write(response);
                 }
-                string response = GetJson(Indentlist);
-                context.Response.Write(response);
             }
             catch
             {
@@ -491,6 +532,7 @@
         {
             public string BranchName { get; set; }
             public string unitQty { get; set; }
+            public string DelQty { get; set; }
             public string ProductName { get; set; }
         }
         private void GetSoRoutes(HttpContext context)

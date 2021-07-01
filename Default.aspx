@@ -109,22 +109,29 @@
                         $('#divDelivers').css('display', 'block');
                         StatusDropDown = "Deliver";
                         if (count > 1) {
-                            $('#divRouteOrder').css('display', 'block');
-                            $('#divDeliverReport').css('display', 'block');
-                            $('#divInventaryReport').css('display', 'block');
-                            
+                            $('#divRouteOrder').css('display', 'none');
+                            $('#divDeliverReport').css('display', 'none');
+                            $('#divInventaryReport').css('display', 'none');
+                            $('#divReports').css('display', 'block');
+                            $('#divOrderReport').css('display', 'none');
+                            $('#divCollectionReport').css('display', 'none');
+                            $('#divShortage').css('display', 'block');
                             FillDispatchRoutes();
                         }
                         else {
                             $('#divRouteOrder').css('display', 'none');
-                            $('#divDeliverReport').css('display', 'block');
-                            $('#divInventaryReport').css('display', 'block');
+                            $('#divDeliverReport').css('display', 'none');
+                            $('#divInventaryReport').css('display', 'none');
+                            $('#divReports').css('display', 'block');
+                            $('#divOrderReport').css('display', 'none');
+                            $('#divCollectionReport').css('display', 'none');
+                            $('#divShortage').css('display', 'block');
                             FillDispatchBrach();
                         }
                         break;
                     case "C":
                         $('#divCollections').css('display', 'block');
-                        $('#divCollectionReport').css('display', 'block');
+                        $('#divCollectionReport').css('display', 'none');
                         $('#tableEmployee').css('display', 'none');
                         break;
                     case "Dispatcher":
@@ -283,35 +290,6 @@
                             $('#divDeliverReport').css('display', 'none');
                             $('#divInventaryReport').css('display', 'none');
 
-                            //                            var ddlDispatch = document.getElementById('ddlDispatchType').value;
-                            //                            if (ddlDispatch == "Dispatch") {
-                            //                                $('#tableOrder').css('display', 'none');
-                            //                                $('#divDelivers').css('display', 'none');
-                            //                                $('#divCollections').css('display', 'none');
-                            //                                $('#divDispatch').css('display', 'block');
-                            //                                $('#divDispreport').css('display', 'block');
-                            //                                $('#divDispTransfer').css('display', 'block');
-                            //                                $('#divSOTransfer').css('display', 'block');
-                            //                                $('#divCollectionReport').css('display', 'none');
-                            //                                $('#divShortage').css('display', 'block');
-                            //                                $('#divVerifyInventory').css('display', 'block');
-                            //                                $('#divDeliverReport').css('display', 'none');
-                            //                            }
-                            //                            else {
-                            //                                $('#tableOrder').css('display', 'block');
-                            //                                $('#divDelivers').css('display', 'block');
-                            //                                $('#divCollections').css('display', 'block');
-                            //                                $('#divDispatch').css('display', 'none');
-                            //                                $('#divDispreport').css('display', 'none');
-                            //                                $('#divDispTransfer').css('display', 'none');
-                            //                                $('#divSOTransfer').css('display', 'none');
-
-                            //                                $('#divCollectionReport').css('display', 'block');
-                            //                                $('#divShortage').css('display', 'block');
-                            //                                $('#divVerifyInventory').css('display', 'none');
-                            //                                $('#divDeliverReport').css('display', 'block');
-                            //                                BindDisBranch();
-                            //                            }
                         }
                         if (Permissions == "SODispatcher") {
                             $('#tableEmployee').css('display', 'block');
@@ -335,44 +313,7 @@
             $(document).ajaxStart($.blockUI).ajaxStop($.unblockUI);
             callHandler(data, s, e);
         }
-//        function ddlDispatchTypeChange() {
-//            var ddlDispatch = document.getElementById('ddlDispatchType').value;
-//            if (ddlDispatch == "Dispatch") {
-//                $('#tableEmployee').css('display', 'block');
-//                $('#tableOrder').css('display', 'none');
-//                $('#divDelivers').css('display', 'none');
-//                $('#divCollections').css('display', 'none');
-//                $('#divDispatch').css('display', 'block');
-//                $('#divDispreport').css('display', 'block');
-//                $('#divDispTransfer').css('display', 'block');
-//                $('#divSOTransfer').css('display', 'block');
-//                
-////                $('#divEdit').css('display', 'block');
-//                $('#divCollectionReport').css('display', 'none');
-//                $('#divShortage').css('display', 'block');
-//                $('#divVerifyInventory').css('display', 'block');
-//                $('#divDeliverReport').css('display', 'none');
-//                
-//            }
-//            else {
-//                $('#tableEmployee').css('display', 'none');
-//                $('#tableOrder').css('display', 'block');
-//                $('#divDelivers').css('display', 'block');
-//                $('#divCollections').css('display', 'block');
-//                $('#divDispatch').css('display', 'none');
-//                $('#divDispreport').css('display', 'none');
-//                $('#divDispTransfer').css('display', 'none');
-//                $('#divSOTransfer').css('display', 'none');
-//                
-////                $('#divEdit').css('display', 'none');
-//                $('#divCollectionReport').css('display', 'block');
-//                $('#divShortage').css('display', 'block');
-//                $('#divVerifyInventory').css('display', 'none');
-//                $('#divDeliverReport').css('display', 'block');
-//                
-//                BindDisBranch();
-//            }
-//        }
+
         function BindDisBranch() {
             var routeID = document.getElementById('ddlRouteName').value;
             var data = { 'op': 'GetDisTypeChange', 'TripId': routeID };
@@ -702,21 +643,7 @@
             });
             document.getElementById('txt_RetunQty').innerHTML = parseFloat(Deliveryqty).toFixed(2);
         }
-//        function fillRoute() {
-//            var data = { 'op': 'GetBranchNames' };
-//            var s = function (msg) {
-//                if (msg) {
-//                    BindRouteName(msg);
 
-//                }
-//                else {
-//                }
-//            };
-//            var e = function (x, h, e) {
-//            };
-//            $(document).ajaxStart($.blockUI).ajaxStop($.unblockUI);
-//            callHandler(data, s, e);
-//        }
         function BindRouteName(msg) {
             document.getElementById('ddlRouteName').options.length = "";
 
@@ -790,16 +717,6 @@
         function ddlRouteNameChange(Id) {
             RouteSno = Id.value;
             if (Permissions == "Dispatcher" ) {
-//                var ddlDispatch = document.getElementById('ddlDispatchType').value;
-//                if (ddlDispatchType == "Dispatch") {
-//                    $('#tableEmployee').css('display', 'block');
-//                    $('#tableOrder').css('display', 'none');
-//                }
-//                else {
-//                    $('#tableEmployee').css('display', 'none');
-//                    $('#tableOrder').css('display', 'block');
-//                    BindDisBranch();
-//                }
                 $('#tableOrder').css('display', 'none');
                 fillIndentType(Id.value);
                 GetEmployeeNames(RouteSno);
@@ -847,24 +764,7 @@
             $(document).ajaxStart($.blockUI).ajaxStop($.unblockUI);
             callHandler(data, s, e);
         }
-//        function FillBranch() {
-//            var Route = "";
-//            var data = { 'op': 'GetBranchNames' };
-//            var s = function (msg) {
-//                if (msg) {
-//                    BindBranchName(msg);
-//                    if (StatusDropDown == "Order") {
-//                        GetBranchStatus(Route);
-//                    }
-//                }
-//                else {
-//                }
-//            };
-//            var e = function (x, h, e) {
-//            };
-//            $(document).ajaxStart($.blockUI).ajaxStop($.unblockUI);
-//            callHandler(data, s, e);
-//        }
+
         function BindBranchName(msg) {
             document.getElementById('ddlBranchName').options.length = "";
           
@@ -1066,32 +966,6 @@
                 }
             });
             document.getElementById('TotRate').innerHTML = TotRate.toFixed(2);
-//            var Leakage = 0;
-//            $('.TotalRateClass').each(function (i, obj) {
-//                var Rate = $(this).closest("tr").find('.Rateclass').text();
-//                var Leakageqty = $(this).text();
-//                if (Leakageqty == "") {
-//                    Leakageqty = 0;
-//                }
-//                Leakage = parseInt(Leakageqty) * parseInt(Rate);
-//                $(this).closest("tr").find('.Dedctionclass').text(Leakage);
-//            });
-////            var Dedction = 0;
-////            $('.Dedctionclass').each(function (i, obj) {
-////                if ($(this).text() == "") {
-////                }
-////                else {
-////                    Dedction += parseInt($(this).text());
-////                }
-////            });
-////            document.getElementById('txt_deduction').innerHTML = Dedction;
-////            document.getElementById('txtDeductions').innerHTML = Dedction;
-////            var AmountPayable = document.getElementById('txtAmountPayable').innerHTML;
-////            var TodayAmount = document.getElementById('txtTodayAmont').innerHTML;
-////            var SubTotal = parseFloat(AmountPayable) - parseFloat(Dedction);
-//////            var TotalAmount = parseFloat(AmountPayable) + parseFloat(SubTotal);
-////            document.getElementById('txtTotalAmount').innerHTML = SubTotal;
-           
         }
         function CountChange(count) {
             var TotalCash = 0;
@@ -1601,18 +1475,16 @@
         }
 
         function divReportsclick() {
-//            var BranchName = document.getElementById('ddlBranchName').value;
-//            if (BranchName == "Select Agent" || BranchName == "") {
-//                alert("Please Select Agent Name");
-//                return false;
-//            }
-//            $('#tableOrder').css('display', 'none');
-//            $('#divback').css('display', 'block');
-//            $('#divRouteOrder').css('display', 'none');
-//            $('#divHide').css('display', 'none');
-//            $('#divFillScreen').css('display', 'block');
-//            $('#divFillScreen').setTemplateURL('Reports8.htm');
-//            $('#divFillScreen').processTemplate();
+            $('#divDelivers').css('display', 'none');
+            $('#divCollections').css('display', 'none');
+            $('#divReports').css('display', 'none');
+            $('#divReporting').css('display', 'none');
+            $('#divShortage').css('display', 'none');
+
+            $('#divOrderReport').css('display', 'block');
+            $('#divCollectionReport').css('display', 'block');
+            $('#divDeliverReport').css('display', 'block');
+            $('#divInventaryReport').css('display', 'block');
         }
         $(document).ready(function () {
             $("#divback").hide();
@@ -2729,7 +2601,6 @@
                 $('#divCollections').css('display', 'none');
                 $('#divDispatch').css('display', 'block');
                 $('#divDispreport').css('display', 'block');
-//                $('#divDispTransfer').css('display', 'block');
                 $('#divSOTransfer').css('display', 'block');
                 $('#divCollectionReport').css('display', 'none');
                 $('#divShortage').css('display', 'block');
@@ -2756,7 +2627,6 @@
                 $('#divReporting').css('display', 'none');
                 $('#divDispatch').css('display', 'none');
                 $('#divDispreport').css('display', 'none');
-//                $('#divDispTransfer').css('display', 'none');
                 $('#tableOrder').css('display', 'none');
                 $('#divVerifyInventory').css('display', 'none');
                 $('#divShortage').css('display', 'none');
@@ -2769,10 +2639,7 @@
                 $('#divSpacialSale').css('display', 'block');
                 $('#divAgentInventory').css('display', 'none');
                 $('#divDirectSale').css('display', 'none');
-                
                 $('#divSalesOfficeLeaks').css('display', 'block');
-//                $('#divDispTransfer').css('display', 'block');
-
                 $('#divSale').css('display', 'none');
                 $('#divProductTransfer').css('display', 'none');
             }
@@ -2786,11 +2653,8 @@
                 $('#divCollections').css('display', 'block');
                 $('#divReports').css('display', 'none');
                 $('#divDispatch').css('display', 'none');
-                //                    $('#divEdit').css('display', 'none');
                 $('#divDispreport').css('display', 'none');
-                //                    $('#divDispTransfer').css('display', 'none');
                 $('#divSOTransfer').css('display', 'none');
-
                 $('#divShortage').css('display', 'none');
                 $('#divCollectionReport').css('display', 'block');
                 $('#divReporting').css('display', 'none');
@@ -2806,24 +2670,22 @@
                 $('#divHide').css('display', 'block');
                 $('#divOrders').css('display', 'none');
                 $('#divIndentReporting').css('display', 'none');
-
                 $('#divDelivers').css('display', 'block');
                 $('#divCollections').css('display', 'block');
                 $('#divReports').css('display', 'none');
                 $('#divDispatch').css('display', 'none');
-//                $('#divEdit').css('display', 'none');
                 $('#divDispreport').css('display', 'none');
-//                $('#divDispTransfer').css('display', 'none');
                 $('#divSOTransfer').css('display', 'none');
-                
                 $('#divShortage').css('display', 'block');
-                $('#divCollectionReport').css('display', 'block');
+                $('#divCollectionReport').css('display', 'none');
                 $('#divReporting').css('display', 'block');
                 $('#divInvReporting').css('display', 'none');
                 $('#divAmountReporting').css('display', 'none');
-                $('#divDeliverReport').css('display', 'block');
-                $('#divDeliverReport').css('display', 'block');
-                $('#divInventaryReport').css('display', 'block');
+                $('#divDeliverReport').css('display', 'none');
+                $('#divDeliverReport').css('display', 'none');
+                $('#divInventaryReport').css('display', 'none');
+                $('#divReports').css('display', 'block');
+                $('#divOrderReport').css('display', 'none');
                 if (count > 1) {
                     $('#divRouteOrder').css('display', 'block');
                 }
@@ -2858,6 +2720,7 @@
                     $('#divAmountReporting').css('display', 'none');
                     $('#divDeliverReport').css('display', 'none');
                     $('#divInventaryReport').css('display', 'none');
+                    $('#divOrderReport').css('display', 'block');
                     GetBranchStatus(ddlroute);
                 }
             }
@@ -4671,6 +4534,24 @@
             callHandler(data, s, e);
         }
         function divOrderReportsclick() {
+            var Permns = [];
+            Permns = Permissions.split(';');
+            for (var i = 0; i < Permns.length; i++) {
+                switch (Permns[i]) {
+                    case "O":
+                        getOrderReport();
+                        break;
+                    case "D":
+                        divOrd_Del_Reportsclick();
+                        break;
+                    case "C":
+                        divOrd_Del_Reportsclick();
+                        break;
+                }
+            }
+            
+        }
+        function getOrderReport() {
             var RouteName = "";
             if (count > 1) {
                 RouteName = document.getElementById('ddlRouteName').value;
@@ -4720,6 +4601,54 @@
             }
             $('#divFillScreen').removeTemplate();
             $('#divFillScreen').setTemplateURL('OrderReport.htm');
+            $('#divFillScreen').processTemplate(dtIndent);
+        }
+        function divOrd_Del_Reportsclick() {
+            var RouteName = "";
+            if (count > 1) {
+                RouteName = document.getElementById('ddlRouteName').value;
+                if (RouteName == "Select Route" || RouteName == "") {
+                    alert("Please Select Route Name");
+                    return false;
+                }
+            }
+            $('#tableOrder').css('display', 'block');
+            $('#divback').css('display', 'block');
+            $('#divHide').css('display', 'none');
+            $('#divRouteOrder').css('display', 'none');
+            $('#divFillScreen').css('display', 'block');
+            var ddlIndentType = document.getElementById('ddlIndentType').value;
+            var data = { 'op': 'GetOrderReport', 'RouteID': RouteName, 'IndentType': ddlIndentType,'ReportType':'Delivery' };
+            var s = function (msg) {
+                if (msg) {
+                    bindOrd_Del_Report(msg);
+                }
+                else {
+                }
+            };
+            var e = function (x, h, e) {
+            };
+            $(document).ajaxStart($.blockUI).ajaxStop($.unblockUI);
+            callHandler(data, s, e);
+        }
+        function bindOrd_Del_Report(msg) {
+            var dtIndent = [];
+            var BranchName = "";
+            for (var i = 0; i < msg.length; i++) {
+                var ProductName = msg[i].ProductName;
+                var UnitQty = msg[i].unitQty;
+                var DelQty = msg[i].DelQty;
+                if (msg[i].BranchName != BranchName) {
+                    BranchName = msg[i].BranchName;
+                    dtIndent.push({ BranchName: BranchName, ProductName: ProductName, UnitQty: UnitQty, DelQty: DelQty });
+                }
+                else {
+                    var Agent = "";
+                    dtIndent.push({ BranchName: Agent, ProductName: ProductName, UnitQty: UnitQty, DelQty: DelQty });
+                }
+            }
+            $('#divFillScreen').removeTemplate();
+            $('#divFillScreen').setTemplateURL('Ord_Del_Report.htm');
             $('#divFillScreen').processTemplate(dtIndent);
         }
     </script>
