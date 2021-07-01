@@ -1480,6 +1480,8 @@
             $('#divReports').css('display', 'none');
             $('#divReporting').css('display', 'none');
             $('#divShortage').css('display', 'none');
+            $('#tableOrder').css('display', 'none');
+            
 
             $('#divOrderReport').css('display', 'block');
             $('#divCollectionReport').css('display', 'block');
