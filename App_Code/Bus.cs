@@ -3310,17 +3310,17 @@
                 cmd.Parameters.AddWithValue("@dispsno", RouteId);
                 cmd.Parameters.AddWithValue("@starttime", DateConverter.GetHighDate(dtDispDate));
                 DataTable dtinventoryopp = vdm.SelectQuery(cmd).Tables[0];
-                cmd = new MySqlCommand("SELECT invtras.TransType, invtras.FromTran, invtras.ToTran, invtras.Qty, invtras.DOE, invmaster.sno AS invsno, invmaster.InvName FROM  invtransactions12 as invtras INNER JOIN invmaster ON invtras.B_inv_sno = invmaster.sno WHERE ToTran=@ToTran  ORDER BY invtras.DOE");
+                cmd = new MySqlCommand("SELECT invtras.TransType, invtras.FromTran, invtras.ToTran, invtras.Qty, invtras.DOE, invmaster.sno AS invsno, invmaster.InvName FROM  invtransactions12 as invtras INNER JOIN invmaster ON invtras.B_inv_sno = invmaster.sno WHERE FromTran=@FromTran  ORDER BY invtras.DOE");
                 //cmd = new MySqlCommand("SELECT invtras.TransType, invtras.FromTran, invtras.ToTran, invtras.Qty, invtras.DOE, invmaster.sno AS invsno, invmaster.InvName FROM (SELECT TransType, FromTran, ToTran, Qty, EmpID, VarifyStatus, VTripId, VEmpId, Sno, B_inv_sno, DOE, VQty FROM invtransactions12 WHERE  (DOE BETWEEN @d1 AND @d2)  and ToTran=@ToTran) invtras INNER JOIN invmaster ON invtras.B_inv_sno = invmaster.sno ORDER BY invtras.DOE");
                 //cmd.Parameters.AddWithValue("@d1", DateConverter.GetLowDate());
                 //cmd.Parameters.AddWithValue("@d2", DateConverter.GetHighDate(dtDispDate));
-                cmd.Parameters.AddWithValue("@ToTran", tripid);
+                cmd.Parameters.AddWithValue("@FromTran", tripid);
                 DataTable dtinventaryissued = vdm.SelectQuery(cmd).Tables[0];
 
-                cmd = new MySqlCommand("SELECT invtras.TransType, invtras.FromTran, invtras.ToTran, invtras.Qty, invtras.DOE, invmaster.sno AS invsno, invmaster.InvName FROM  invtransactions12 as invtras INNER JOIN invmaster ON invtras.B_inv_sno = invmaster.sno WHERE FromTran=@FromTran  ORDER BY invtras.DOE");
+                cmd = new MySqlCommand("SELECT invtras.TransType, invtras.FromTran, invtras.ToTran, invtras.Qty, invtras.DOE, invmaster.sno AS invsno, invmaster.InvName FROM  invtransactions12 as invtras INNER JOIN invmaster ON invtras.B_inv_sno = invmaster.sno WHERE ToTran=@ToTran  ORDER BY invtras.DOE");
                 //cmd.Parameters.AddWithValue("@d1", DateConverter.GetLowDate(dtDispDate));
                 //cmd.Parameters.AddWithValue("@d2", DateConverter.GetHighDate(dtDispDate));
-                cmd.Parameters.AddWithValue("@FromTran", tripid);
+                cmd.Parameters.AddWithValue("@ToTran", tripid);
                 DataTable dtinventaryreceived = vdm.SelectQuery(cmd).Tables[0];
 
                 cmd = new MySqlCommand("SELECT branchdata.BranchName, branchdata.sno, modifiedroutes.RouteName, modifiedroutes.Sno AS routesno FROM dispatch INNER JOIN dispatch_sub ON dispatch.sno = dispatch_sub.dispatch_sno INNER JOIN modifiedroutes ON dispatch_sub.Route_id = modifiedroutes.Sno INNER JOIN modifiedroutesubtable ON modifiedroutes.Sno = modifiedroutesubtable.RefNo INNER JOIN branchdata ON modifiedroutesubtable.BranchID = branchdata.sno WHERE (dispatch.sno = @routeid) AND (branchdata.flag = '1') AND (modifiedroutesubtable.EDate IS NULL) AND (modifiedroutesubtable.CDate <= @starttime) OR (dispatch.sno = @routeid) AND (branchdata.flag = '1') AND (modifiedroutesubtable.EDate > @starttime) AND (modifiedroutesubtable.CDate <= @starttime)");
@@ -3328,7 +3328,7 @@
                 cmd.Parameters.AddWithValue("@starttime", DateConverter.GetHighDate(dtDispDate));
                 DataTable dtbranch = vdm.SelectQuery(cmd).Tables[0];
 
-               
+
                 Report = new DataTable();
                 Report.Columns.Add("Sno");
                 Report.Columns.Add("Branch Code");
@@ -3337,7 +3337,9 @@
                 Report.Columns.Add("Issued Crates", typeof(Double));
                 Report.Columns.Add("Received Crates", typeof(Double));
                 Report.Columns.Add("CB Crates", typeof(Double));
-                dtinventaryissued.Merge(dtinventaryreceived);
+                DataTable dtinventary_issued = new DataTable();
+                dtinventary_issued.Merge(dtinventaryissued);
+                dtinventary_issued.Merge(dtinventaryreceived);
                 foreach (DataRow drroutebrnch in dtbranch.Rows)
                 {
                     int Ctotcrates = 0;
@@ -3353,7 +3355,7 @@
                             int.TryParse(dropp["Qty"].ToString(), out oppcrates);
                         }
                     }
-                    foreach (DataRow dr in dtinventaryissued.Select("ToTran='" + drroutebrnch["sno"].ToString() + "' OR FromTran='" + drroutebrnch["sno"].ToString() + "'"))
+                    foreach (DataRow dr in dtinventary_issued.Select("ToTran='" + drroutebrnch["sno"].ToString() + "'"))
                     {
                         if (dr["TransType"].ToString() == "2")
                         {
@@ -3364,14 +3366,14 @@
                                 Dtotcrates += Dcrates;
                             }
                         }
-                        foreach (DataRow drr in dtinventaryissued.Select("ToTran='" + drroutebrnch["sno"].ToString() + "' OR FromTran='" + drroutebrnch["sno"].ToString() + "'"))
+                        foreach (DataRow drr in dtinventary_issued.Select("FromTran='" + drroutebrnch["sno"].ToString() + "'"))
                         {
-                            if (dr["TransType"].ToString() == "1" || dr["TransType"].ToString() == "3")
+                            if (drr["TransType"].ToString() == "1" || drr["TransType"].ToString() == "3")
                             {
-                                if (dr["invsno"].ToString() == "1")
+                                if (drr["invsno"].ToString() == "1")
                                 {
                                     int Ccrates = 0;
-                                    int.TryParse(dr["Qty"].ToString(), out Ccrates);
+                                    int.TryParse(drr["Qty"].ToString(), out Ccrates);
                                     Ctotcrates += Ccrates;
                                 }
                             }
