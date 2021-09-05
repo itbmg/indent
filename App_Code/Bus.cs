@@ -7824,6 +7824,23 @@
                                                     cmd.Parameters.AddWithValue("@BranchId", b_bid);
                                                     vdm.insert(cmd);
                                                 }
+                                                string opbal = "0";
+                                                string clobal = "0";
+                                                cmd = new MySqlCommand("SELECT MAX(sno) as sno FROM agent_bal_trans WHERE agentid=@agentid");
+                                                cmd.Parameters.AddWithValue("@agentid", b_bid);
+                                                DataTable dtagentbal = vdm.SelectQuery(cmd).Tables[0];
+                                                if (dtagentbal.Rows.Count > 0)
+                                                {
+                                                    string sno = dtagentbal.Rows[0]["sno"].ToString();
+                                                    cmd = new MySqlCommand("SELECT  opp_balance, clo_balance FROM agent_bal_trans WHERE sno=@sno");
+                                                    cmd.Parameters.AddWithValue("@sno", sno);
+                                                    DataTable dtopbal = vdm.SelectQuery(cmd).Tables[0];
+                                                    if (dtopbal.Rows.Count > 0)
+                                                    {
+                                                        opbal = dtopbal.Rows[0]["opp_balance"].ToString();
+                                                        clobal = dtopbal.Rows[0]["clo_balance"].ToString();
+                                                    }
+                                                }
                                                 cmd = new MySqlCommand("UPDATE agent_bal_trans set salesvalue=salesvalue-@Amount, clo_balance=clo_balance-@clAmount  where agentid=@BranchId AND inddate=@inddate");
                                                 cmd.Parameters.AddWithValue("@Amount", TotIndentcost);
                                                 cmd.Parameters.AddWithValue("@BranchId", b_bid);
@@ -7833,7 +7850,7 @@
                                                 {
                                                     cmd = new MySqlCommand("Insert Into agent_bal_trans(agentid, opp_balance, inddate, salesvalue,  clo_balance, createdate, entryby,Paidamount) values (@BranchId,@opp_balance,@inddate, @salesvalue, @clo_balance, @createdate, @entryby,@Paidamount)");
                                                     cmd.Parameters.AddWithValue("@BranchId", b_bid);
-                                                    cmd.Parameters.AddWithValue("@opp_balance", 0);
+                                                    cmd.Parameters.AddWithValue("@opp_balance", clobal);
                                                     cmd.Parameters.AddWithValue("@Paidamount", 0);
                                                     cmd.Parameters.AddWithValue("@inddate", loginindentdate);
                                                     cmd.Parameters.AddWithValue("@salesvalue", TotIndentcost);
@@ -7858,6 +7875,23 @@
                                                     cmd.Parameters.AddWithValue("@BranchId", b_bid);
                                                     vdm.insert(cmd);
                                                 }
+                                                string opbal = "0";
+                                                string clobal = "0";
+                                                cmd = new MySqlCommand("SELECT MAX(sno) as sno FROM agent_bal_trans WHERE agentid=@agentid");
+                                                cmd.Parameters.AddWithValue("@agentid", b_bid);
+                                                DataTable dtagentbal = vdm.SelectQuery(cmd).Tables[0];
+                                                if (dtagentbal.Rows.Count > 0)
+                                                {
+                                                    string sno = dtagentbal.Rows[0]["sno"].ToString();
+                                                    cmd = new MySqlCommand("SELECT  opp_balance, clo_balance FROM agent_bal_trans WHERE sno=@sno");
+                                                    cmd.Parameters.AddWithValue("@sno", sno);
+                                                    DataTable dtopbal = vdm.SelectQuery(cmd).Tables[0];
+                                                    if (dtopbal.Rows.Count > 0)
+                                                    {
+                                                        opbal = dtopbal.Rows[0]["opp_balance"].ToString();
+                                                        clobal = dtopbal.Rows[0]["clo_balance"].ToString();
+                                                    }
+                                                }
                                                 cmd = new MySqlCommand("UPDATE agent_bal_trans set salesvalue=salesvalue+@Amount, clo_balance=clo_balance+@Amount  where agentid=@BranchId AND inddate=@inddate");
                                                 cmd.Parameters.AddWithValue("@Amount", TotIndentcost);
                                                 cmd.Parameters.AddWithValue("@BranchId", b_bid);
@@ -7866,7 +7900,7 @@
                                                 {
                                                     cmd = new MySqlCommand("Insert Into agent_bal_trans(agentid, opp_balance, inddate, salesvalue,  clo_balance, createdate, entryby,Paidamount) values (@BranchId,@opp_balance,@inddate, @salesvalue, @clo_balance, @createdate, @entryby,@Paidamount)");
                                                     cmd.Parameters.AddWithValue("@BranchId", b_bid);
-                                                    cmd.Parameters.AddWithValue("@opp_balance", 0);
+                                                    cmd.Parameters.AddWithValue("@opp_balance", clobal);
                                                     cmd.Parameters.AddWithValue("@Paidamount", 0);
                                                     cmd.Parameters.AddWithValue("@inddate", loginindentdate);
                                                     cmd.Parameters.AddWithValue("@salesvalue", TotIndentcost);
@@ -8091,6 +8125,23 @@
                                                         cmd.Parameters.AddWithValue("@BranchId", b_bid);
                                                         vdm.insert(cmd);
                                                     }
+                                                    string opbal = "0";
+                                                    string clobal = "0";
+                                                    cmd = new MySqlCommand("SELECT MAX(sno) as sno FROM agent_bal_trans WHERE agentid=@agentid");
+                                                    cmd.Parameters.AddWithValue("@agentid", b_bid);
+                                                    DataTable dtagentbal = vdm.SelectQuery(cmd).Tables[0];
+                                                    if (dtagentbal.Rows.Count > 0)
+                                                    {
+                                                        string sno = dtagentbal.Rows[0]["sno"].ToString();
+                                                        cmd = new MySqlCommand("SELECT  opp_balance, clo_balance FROM agent_bal_trans WHERE sno=@sno");
+                                                        cmd.Parameters.AddWithValue("@sno", sno);
+                                                        DataTable dtopbal = vdm.SelectQuery(cmd).Tables[0];
+                                                        if (dtopbal.Rows.Count > 0)
+                                                        {
+                                                            opbal = dtopbal.Rows[0]["opp_balance"].ToString();
+                                                            clobal = dtopbal.Rows[0]["clo_balance"].ToString();
+                                                        }
+                                                    }
                                                     cmd = new MySqlCommand("UPDATE agent_bal_trans set salesvalue=salesvalue+@Amount, clo_balance=clo_balance+@Amount  where agentid=@BranchId AND inddate=@inddate");
                                                     cmd.Parameters.AddWithValue("@inddate", loginindentdate);
                                                     cmd.Parameters.AddWithValue("@Amount", TotIndentcost);
@@ -8099,7 +8150,7 @@
                                                     {
                                                         cmd = new MySqlCommand("Insert Into agent_bal_trans(agentid, opp_balance, inddate, salesvalue,  clo_balance, createdate, entryby,Paidamount) values (@BranchId,@opp_balance,@inddate, @salesvalue, @clo_balance, @createdate, @entryby,@Paidamount)");
                                                         cmd.Parameters.AddWithValue("@BranchId", b_bid);
-                                                        cmd.Parameters.AddWithValue("@opp_balance", 0);
+                                                        cmd.Parameters.AddWithValue("@opp_balance", clobal);
                                                         cmd.Parameters.AddWithValue("@inddate", loginindentdate);
                                                         cmd.Parameters.AddWithValue("@salesvalue", TotIndentcost);
                                                         cmd.Parameters.AddWithValue("@Paidamount", 0);
@@ -8135,6 +8186,23 @@
                                                                 cmd.Parameters.AddWithValue("@BranchId", b_bid);
                                                                 vdm.insert(cmd);
                                                             }
+                                                            string opbal = "0";
+                                                            string clobal = "0";
+                                                            cmd = new MySqlCommand("SELECT MAX(sno) as sno FROM agent_bal_trans WHERE agentid=@agentid");
+                                                            cmd.Parameters.AddWithValue("@agentid", b_bid);
+                                                            DataTable dtagentbal = vdm.SelectQuery(cmd).Tables[0];
+                                                            if (dtagentbal.Rows.Count > 0)
+                                                            {
+                                                                string sno = dtagentbal.Rows[0]["sno"].ToString();
+                                                                cmd = new MySqlCommand("SELECT  opp_balance, clo_balance FROM agent_bal_trans WHERE sno=@sno");
+                                                                cmd.Parameters.AddWithValue("@sno", sno);
+                                                                DataTable dtopbal = vdm.SelectQuery(cmd).Tables[0];
+                                                                if (dtopbal.Rows.Count > 0)
+                                                                {
+                                                                    opbal = dtopbal.Rows[0]["opp_balance"].ToString();
+                                                                    clobal = dtopbal.Rows[0]["clo_balance"].ToString();
+                                                                }
+                                                            }
                                                             cmd = new MySqlCommand("UPDATE agent_bal_trans set salesvalue=salesvalue-@Amount, clo_balance=clo_balance-@Amount  where agentid=@BranchId AND inddate=@inddate");
                                                             cmd.Parameters.AddWithValue("@inddate", loginindentdate);
                                                             cmd.Parameters.AddWithValue("@Amount", TotIndentcost);
@@ -8143,7 +8211,7 @@
                                                             {
                                                                 cmd = new MySqlCommand("Insert Into agent_bal_trans(agentid, opp_balance, inddate, salesvalue,  clo_balance, createdate, entryby,Paidamount) values (@BranchId,@opp_balance,@inddate, @salesvalue, @clo_balance, @createdate, @entryby,@Paidamount)");
                                                                 cmd.Parameters.AddWithValue("@BranchId", b_bid);
-                                                                cmd.Parameters.AddWithValue("@opp_balance", 0);
+                                                                cmd.Parameters.AddWithValue("@opp_balance", clobal);
                                                                 cmd.Parameters.AddWithValue("@inddate", loginindentdate);
                                                                 cmd.Parameters.AddWithValue("@salesvalue", TotIndentcost);
                                                                 cmd.Parameters.AddWithValue("@Paidamount", 0);
@@ -8167,6 +8235,23 @@
                                                                 cmd.Parameters.AddWithValue("@BranchId", b_bid);
                                                                 vdm.insert(cmd);
                                                             }
+                                                            string opbal = "0";
+                                                            string clobal = "0";
+                                                            cmd = new MySqlCommand("SELECT MAX(sno) as sno FROM agent_bal_trans WHERE agentid=@agentid");
+                                                            cmd.Parameters.AddWithValue("@agentid", b_bid);
+                                                            DataTable dtagentbal = vdm.SelectQuery(cmd).Tables[0];
+                                                            if (dtagentbal.Rows.Count > 0)
+                                                            {
+                                                                string sno = dtagentbal.Rows[0]["sno"].ToString();
+                                                                cmd = new MySqlCommand("SELECT  opp_balance, clo_balance FROM agent_bal_trans WHERE sno=@sno");
+                                                                cmd.Parameters.AddWithValue("@sno", sno);
+                                                                DataTable dtopbal = vdm.SelectQuery(cmd).Tables[0];
+                                                                if (dtopbal.Rows.Count > 0)
+                                                                {
+                                                                    opbal = dtopbal.Rows[0]["opp_balance"].ToString();
+                                                                    clobal = dtopbal.Rows[0]["clo_balance"].ToString();
+                                                                }
+                                                            }
                                                             cmd = new MySqlCommand("UPDATE agent_bal_trans set salesvalue=salesvalue+@Amount, clo_balance=clo_balance+@Amount  where agentid=@BranchId AND inddate=@inddate");
                                                             cmd.Parameters.AddWithValue("@inddate", loginindentdate);
                                                             cmd.Parameters.AddWithValue("@Amount", TotIndentcost);
@@ -8175,7 +8260,7 @@
                                                             {
                                                                 cmd = new MySqlCommand("Insert Into agent_bal_trans(agentid, opp_balance, inddate, salesvalue,  clo_balance, createdate, entryby,Paidamount) values (@BranchId,@opp_balance,@inddate, @salesvalue, @clo_balance, @createdate, @entryby,@Paidamount)");
                                                                 cmd.Parameters.AddWithValue("@BranchId", b_bid);
-                                                                cmd.Parameters.AddWithValue("@opp_balance", 0);
+                                                                cmd.Parameters.AddWithValue("@opp_balance", clobal);
                                                                 cmd.Parameters.AddWithValue("@inddate", loginindentdate);
                                                                 cmd.Parameters.AddWithValue("@salesvalue", TotIndentcost);
                                                                 cmd.Parameters.AddWithValue("@Paidamount", 0);
@@ -8262,6 +8347,24 @@
                                                 cmd.Parameters.AddWithValue("@BranchId", b_bid);
                                                 vdm.insert(cmd);
                                             }
+
+                                            string opbal = "0";
+                                            string clobal = "0";
+                                            cmd = new MySqlCommand("SELECT MAX(sno) as sno FROM agent_bal_trans WHERE agentid=@agentid");
+                                            cmd.Parameters.AddWithValue("@agentid", b_bid);
+                                            DataTable dtagentbal = vdm.SelectQuery(cmd).Tables[0];
+                                            if (dtagentbal.Rows.Count > 0)
+                                            {
+                                                string sno = dtagentbal.Rows[0]["sno"].ToString();
+                                                cmd = new MySqlCommand("SELECT  opp_balance, clo_balance FROM agent_bal_trans WHERE sno=@sno");
+                                                cmd.Parameters.AddWithValue("@sno", sno);
+                                                DataTable dtopbal = vdm.SelectQuery(cmd).Tables[0];
+                                                if (dtopbal.Rows.Count > 0)
+                                                {
+                                                    opbal = dtopbal.Rows[0]["opp_balance"].ToString();
+                                                    clobal = dtopbal.Rows[0]["clo_balance"].ToString();
+                                                }
+                                            }
                                             cmd = new MySqlCommand("Update agent_bal_trans set salesvalue=salesvalue+@Amount, clo_balance=clo_balance+@Amount  where agentid=@BranchId AND inddate=@inddate");
                                             cmd.Parameters.AddWithValue("@Amount", TotRate);
                                             cmd.Parameters.AddWithValue("@BranchId", b_bid);
@@ -8270,7 +8373,7 @@
                                             {
                                                 cmd = new MySqlCommand("Insert Into agent_bal_trans(agentid, opp_balance, inddate, salesvalue,  clo_balance, createdate, entryby,Paidamount) values (@BranchId,@opp_balance,@inddate, @salesvalue, @clo_balance, @createdate, @entryby,@Paidamount)");
                                                 cmd.Parameters.AddWithValue("@BranchId", b_bid);
-                                                cmd.Parameters.AddWithValue("@opp_balance", 0);
+                                                cmd.Parameters.AddWithValue("@opp_balance", clobal);
                                                 cmd.Parameters.AddWithValue("@inddate", loginindentdate);
                                                 cmd.Parameters.AddWithValue("@salesvalue", TotRate);
                                                 cmd.Parameters.AddWithValue("@Paidamount", 0);
