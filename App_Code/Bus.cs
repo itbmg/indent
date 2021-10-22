@@ -6718,7 +6718,7 @@
                                     cmd.Parameters.AddWithValue("@ReceiptNo", ReceiptNo);
                                     vdm.Update(cmd);
 
-                                    cmd = new MySqlCommand("Update branchaccounts set Amount=Amount+@Amount where BranchId=@BranchId");
+                                    cmd = new MySqlCommand("Update branchaccounts set Amount=Amount-@Amount where BranchId=@BranchId");
                                     cmd.Parameters.AddWithValue("@Amount", diffamt);
                                     cmd.Parameters.AddWithValue("@BranchId", b_bid);
                                     vdm.Update(cmd);
@@ -6767,6 +6767,17 @@
                             }
                             else
                             {
+                                //#begin added by akbar for paidamount updating at the time of edit
+                                cmd = new MySqlCommand("UPDATE collections SET AmountPaid=@AmountPaid, Denominations=@Denominations, PaidDate=@PaidDate, PayTime=@PayTime WHERE Branchid=@Branchid AND tripId=@tripId AND ReceiptNo=@ReceiptNo");
+                                cmd.Parameters.AddWithValue("@Branchid", b_bid);
+                                cmd.Parameters.AddWithValue("@tripId", context.Session["TripdataSno"].ToString());
+                                cmd.Parameters.AddWithValue("@PayTime", ServerDateCurrentdate);
+                                cmd.Parameters.AddWithValue("@PaidDate", ServerDateCurrentdate);
+                                cmd.Parameters.AddWithValue("@AmountPaid", TotPaidAmount);
+                                cmd.Parameters.AddWithValue("@Denominations", DenominationString);
+                                cmd.Parameters.AddWithValue("@ReceiptNo", ReceiptNo);
+                                vdm.Update(cmd);
+                                //# End added by akbar for paidamount updating at the time of edit
                                 cmd = new MySqlCommand("Update branchaccounts set Amount=Amount-@Amount where BranchId=@BranchId");
                                 cmd.Parameters.AddWithValue("@Amount", diffamt);
                                 cmd.Parameters.AddWithValue("@BranchId", b_bid);
@@ -6793,7 +6804,7 @@
                                     DataTable dtagenttrans = vdm.SelectQuery(cmd).Tables[0];
                                     if (dtagenttrans.Rows.Count > 0)
                                     {
-                                        cmd = new MySqlCommand("UPDATE agent_bal_trans SET paidamount=paidamount-@paidamount, clo_balance=clo_balance+@clo_balance where sno=@refno");
+                                        cmd = new MySqlCommand("UPDATE agent_bal_trans SET paidamount=paidamount+@paidamount, clo_balance=clo_balance-@clo_balance where sno=@refno");
                                         cmd.Parameters.AddWithValue("@paidamount", diffamt);
                                         cmd.Parameters.AddWithValue("@refno", maxsno);
                                         cmd.Parameters.AddWithValue("@clo_balance", diffamt);
@@ -8040,12 +8051,13 @@
                                     {
                                         if (IndentsNo == 0)
                                         {
-                                            cmd = new MySqlCommand("insert into indents (Branch_id,I_date,UserData_sno,Status,PaymentStatus)values(@Branch_id,@I_date,@UserData_sno,@Status,@PaymentStatus)");
+                                            cmd = new MySqlCommand("insert into indents (Branch_id,I_date,UserData_sno,Status,PaymentStatus,IndentType)values(@Branch_id,@I_date,@UserData_sno,@Status,@PaymentStatus,@IndentType)");
                                             cmd.Parameters.AddWithValue("@Branch_id", BranchID);
                                             cmd.Parameters.AddWithValue("@I_date", ServerDateCurrentdate.AddDays(-1));
                                             cmd.Parameters.AddWithValue("@UserData_sno", Username);
                                             cmd.Parameters.AddWithValue("@Status", "O");
                                             cmd.Parameters.AddWithValue("@PaymentStatus", 'A');
+                                            cmd.Parameters.AddWithValue("@IndentType", "Indent1");
                                             IndentsNo = vdm.insertScalar(cmd);
                                         }
                                     }
