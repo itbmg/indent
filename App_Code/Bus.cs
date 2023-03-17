@@ -3330,7 +3330,7 @@
                 cmd.Parameters.AddWithValue("@starttime", DateConverter.GetHighDate(dtDispDate));
                 DataTable dtbranch = vdm.SelectQuery(cmd).Tables[0];
 
-               
+
                 Report = new DataTable();
                 Report.Columns.Add("Sno");
                 Report.Columns.Add("Branch Code");
