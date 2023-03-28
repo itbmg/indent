@@ -6284,18 +6284,35 @@
                     GetProduct.Units = dtProduct.Rows[0]["Units"].ToString();
                     GetProduct.invqty = dtProduct.Rows[0]["invqty"].ToString();
                     string BranchUnitPrice = dtProduct.Rows[0]["BUnitPrice"].ToString();
-                    float Rate = 0;
+                    double Rate = 0;
+                    double perltrCost = 0;
                     if (BranchUnitPrice != "0")
                     {
-                        Rate = (float)dtProduct.Rows[0]["BUnitPrice"];
+                        //added by akbar converting pktrate to ltrcost 27-03-2023
+                        double unitprice = 0;
+                        double.TryParse(dtProduct.Rows[0]["BUnitPrice"].ToString(), out unitprice);
+                        double UOMQty = 0;
+                        double.TryParse(dtProduct.Rows[0]["Qty"].ToString(), out UOMQty);
+                        perltrCost = (1000 / UOMQty) * unitprice;
+                        perltrCost = Math.Round(perltrCost, 2);
+                        Rate = perltrCost;
+                        //Rate = (float)dtProduct.Rows[0]["BUnitPrice"];
                     }
                     else
                     {
-                        Rate = (float)dtProduct.Rows[0]["UnitPrice"];
+                        //added by akbar converting pktrate to ltrcost 27-03-2023
+                        double unitprice = 0;
+                        double.TryParse(dtProduct.Rows[0]["UnitPrice"].ToString(), out unitprice);
+                        double UOMQty = 0;
+                        double.TryParse(dtProduct.Rows[0]["Qty"].ToString(), out UOMQty);
+                        perltrCost = (1000 / UOMQty) * unitprice;
+                        perltrCost = Math.Round(perltrCost, 2);
+                        Rate = perltrCost;
+                        //Rate = (float)dtProduct.Rows[0]["UnitPrice"];
                     }
                     //float Rate = (float)dtProduct.Rows[0]["UnitPrice"];
                     float Unitqty = (float)dtProduct.Rows[0]["Qty"];
-                    float TotalRate = 0;
+                    double TotalRate = 0;
                     TotalRate = Rate;
                     //if (dtProduct.Rows[0]["Units"].ToString() == "ml")
                     //{
@@ -6339,10 +6356,24 @@
                     GetProduct.UnitPrice = dtBranchProduct.Rows[0]["UnitPrice"].ToString();
                     GetProduct.Unitqty = dtBranchProduct.Rows[0]["Qty"].ToString();
                     GetProduct.Units = dtBranchProduct.Rows[0]["Units"].ToString();
-                    float Rate = (float)dtBranchProduct.Rows[0]["UnitPrice"];
+
+                    //added by akbar converting pktrate to ltrcost 27-03-2023
+                    double perltrCost = 0;
+                    double Rate = 0;
+
+                    double unitprice = 0;
+                    double.TryParse(dtBranchProduct.Rows[0]["UnitPrice"].ToString(), out unitprice);
+                    double UOMQty = 0;
+                    double.TryParse(dtBranchProduct.Rows[0]["Qty"].ToString(), out UOMQty);
+                    perltrCost = (1000 / UOMQty) * unitprice;
+                    perltrCost = Math.Round(perltrCost, 2);
+                    Rate = perltrCost;
+                    //Rate = (float)dtProduct.Rows[0]["UnitPrice"];
+
+                    //float Rate = (float)dtBranchProduct.Rows[0]["UnitPrice"];
                     float Unitqty = (float)dtBranchProduct.Rows[0]["Qty"];
                     GetProduct.invqty = dtBranchProduct.Rows[0]["invqty"].ToString();
-                    float TotalRate = 0;
+                    double TotalRate = 0;
                     TotalRate = Rate;
                     //if (dtBranchProduct.Rows[0]["Units"].ToString() == "ml")
                     //{

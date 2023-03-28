@@ -3176,6 +3176,7 @@
             var ddlDelivered = "";
             var txtLeakqty = 0;
             var txtCost = 0;
+            var txtUnits = 0;
             var HdnIndentSno = 0;
             var txtRemainingQty = 0;
             var rows = $("#tabledetails tr:gt(0)");
@@ -3207,7 +3208,9 @@
                     txtReturnqty = $(this).find('#txtReturnqty').val();
                     ddlDelivered = $(this).find('#ddlDelivered').val();
                     txtCost = $(this).find('#hdnCost').val();
-                    DeliverTable.push({ sno: txtsno, ProductCode: txtProductName, Productsno: txtProductSno, LeakQty: txtLeakqty, IndentNo: txtIndentNo, HdnSno: txthdnSno, Qty: txtqty, DQty: txtReturnqty, Status: ddlDelivered, orderunitRate: txtCost, HdnIndentSno: HdnIndentSno, RQty: txtRemainingQty });
+                    txtUnits = $(this).find('#hdnuomqty').val();//added uom qty
+                    
+                    DeliverTable.push({ sno: txtsno, ProductCode: txtProductName, Productsno: txtProductSno, LeakQty: txtLeakqty, IndentNo: txtIndentNo, HdnSno: txthdnSno, Qty: txtqty, DQty: txtReturnqty, Status: ddlDelivered, orderunitRate: txtCost, HdnIndentSno: HdnIndentSno, RQty: txtRemainingQty, Units: txtUnits });//added uom qty
                 }
             });
             var Sno = parseInt(txtsno) + 1;
@@ -3220,7 +3223,7 @@
             var leak = 0;
             var DQty = 0;
             var RQty = 0;
-            DeliverTable.push({ sno: Sno, ProductCode: ProductName, Productsno: ProductSno, LeakQty: leak, HdnSno: hdnISno, IndentNo: txtIndentNo, Qty: Qty, DQty: DQty, Status: Delivered, orderunitRate: UnitPrice, HdnIndentSno: HdnIndentSno, RQty: RemainQty });
+            DeliverTable.push({ sno: Sno, ProductCode: ProductName, Productsno: ProductSno, LeakQty: leak, HdnSno: hdnISno, IndentNo: txtIndentNo, Qty: Qty, DQty: DQty, Status: Delivered, orderunitRate: UnitPrice, HdnIndentSno: HdnIndentSno, RQty: RemainQty, Units: UnitQty });//added uomqty
             $('#divFillScreen').setTemplateURL('Delivers8.htm');
             $('#divFillScreen').processTemplate(DeliverTable);
 
