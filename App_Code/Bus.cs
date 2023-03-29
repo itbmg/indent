@@ -6374,7 +6374,17 @@
                     float Unitqty = (float)dtBranchProduct.Rows[0]["Qty"];
                     GetProduct.invqty = dtBranchProduct.Rows[0]["invqty"].ToString();
                     double TotalRate = 0;
-                    TotalRate = Rate;
+                    if (context.Session["Permissions"].ToString() == "O")
+                    {
+                        double unitprice1 = 0;
+                        double.TryParse(dtBranchProduct.Rows[0]["UnitPrice"].ToString(), out unitprice1);
+                        TotalRate = unitprice1;
+                    }
+                    else
+                    {
+                        TotalRate = Rate;
+
+                    }
                     //if (dtBranchProduct.Rows[0]["Units"].ToString() == "ml")
                     //{
                     //    TotalRate = Rate;
