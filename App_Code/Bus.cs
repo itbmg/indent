@@ -7851,20 +7851,20 @@
                     float Returnqty;
                     long IndentsNo = 0;
                     DataTable dtDelivers = new DataTable();
-                    if (context.Session["Delivers"] == null)
-                    {
+                    //if (context.Session["Delivers"] == null)
+                    //{
                         cmd = new MySqlCommand("SELECT indents.I_date,indents_subtable.Sno,indents_subtable.LeakQty,indents_subtable.DeliveryQty, indents_subtable.unitQty,indents_subtable.UnitCost, indents_subtable.Product_sno, productsdata.ProductName, indents_subtable.Status,  productsdata.sno, indents.IndentNo FROM indents INNER JOIN indents_subtable ON indents.IndentNo = indents_subtable.IndentNo INNER JOIN productsdata ON indents_subtable.Product_sno = productsdata.sno WHERE (indents.Branch_id = @bsno)  AND (indents.I_date between @d1 AND  @d2) group By productsdata.ProductName ");
                         cmd.Parameters.AddWithValue("@UserName", Username);
                         cmd.Parameters.AddWithValue("@d1", DateConverter.GetLowDate(ServerDateCurrentdate.AddDays(-1)));
                         cmd.Parameters.AddWithValue("@d2", DateConverter.GetHighDate(ServerDateCurrentdate.AddDays(-1)));
                         cmd.Parameters.AddWithValue("@bsno", b_bid);
                         dtDelivers = vdm.SelectQuery(cmd).Tables[0];
-                        context.Session["Delivers"] = dtDelivers;
-                    }
-                    else
-                    {
-                        dtDelivers = (DataTable)context.Session["Delivers"];
-                    }
+                        //context.Session["Delivers"] = dtDelivers;
+                    //}
+                    //else
+                    //{
+                    //    dtDelivers = (DataTable)context.Session["Delivers"];
+                    //}
                     int DataCount = obj.data.Count;
                     string ProductName = "";
                     double TotalQty = 0;
