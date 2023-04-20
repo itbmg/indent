@@ -816,7 +816,7 @@
                                 float Lqty = 0;
                                 float.TryParse(o.LeakQty, NumberStyles.Number, CultureInfo.CurrentCulture.NumberFormat, out Lqty);
                                 float TQty = Aqty - Eqty;
-                                if (TQty >= 1)
+                                if (TQty >= 0)
                                 {
                                     double EditAmount = TQty * UnitCost;
                                     cmd = new MySqlCommand("Update branchaccounts set Amount=Amount+@Amount where BranchId=@BranchId");
@@ -1166,47 +1166,47 @@
                 {
                     InvName += dr["InvName"].ToString() + "=" + dr["Qty"].ToString() + ";";
                 }
-                if (phonenumber.Length == 10)
-                {
-                    string Date = DateTime.Now.ToString("dd/MM/yyyy"); ;
-                    WebClient client = new WebClient();
-                    //string baseurl = "http://www.smsstriker.com/API/sms.php?username=vaishnavidairy&password=vyshnavi@123&from=VYSNVI&to=" + MobNo + "&message=%20" + msg + "&response=Y";
-                    string BranchSno = context.Session["CsoNo"].ToString();
-                    if (BranchSno == "4609" || BranchSno == "3625" || BranchSno == "2948" || BranchSno == "172" || BranchSno == "282" || BranchSno == "271" || BranchSno == "174" || BranchSno == "3928" || BranchSno == "285" || BranchSno == "527" || BranchSno == "4607" || BranchSno == "306" || BranchSno == "538" || BranchSno == "2749" || BranchSno == "1801")
-                    {
-                        string baseurl = "http://roundsms.com/api/sendhttp.php?authkey=Y2U3NGE2MGFkM2V&mobiles=" + phonenumber + "&message=Dear%20" + BranchName + "%20DCNO:%20" + DcNo + "%20Your%20indent%20delivery%20for%20today%20" + Date + "%20,%20" + ProductName + "Total%20Ltrs =" + TotalQty + "Sale%20Value%20" + Salevalue + "%20With%20Bal%20Inventory%20" + InvName + "&sender=VYSNVI&type=1&route=2";
+                //////if (phonenumber.Length == 10)
+                //////{
+                //////    string Date = DateTime.Now.ToString("dd/MM/yyyy"); ;
+                //////    WebClient client = new WebClient();
+                //////    //string baseurl = "http://www.smsstriker.com/API/sms.php?username=vaishnavidairy&password=vyshnavi@123&from=VYSNVI&to=" + MobNo + "&message=%20" + msg + "&response=Y";
+                //////    string BranchSno = context.Session["CsoNo"].ToString();
+                //////    if (BranchSno == "4609" || BranchSno == "3625" || BranchSno == "2948" || BranchSno == "172" || BranchSno == "282" || BranchSno == "271" || BranchSno == "174" || BranchSno == "3928" || BranchSno == "285" || BranchSno == "527" || BranchSno == "4607" || BranchSno == "306" || BranchSno == "538" || BranchSno == "2749" || BranchSno == "1801")
+                //////    {
+                //////        string baseurl = "http://roundsms.com/api/sendhttp.php?authkey=Y2U3NGE2MGFkM2V&mobiles=" + phonenumber + "&message=Dear%20" + BranchName + "%20DCNO:%20" + DcNo + "%20Your%20indent%20delivery%20for%20today%20" + Date + "%20,%20" + ProductName + "Total%20Ltrs =" + TotalQty + "Sale%20Value%20" + Salevalue + "%20With%20Bal%20Inventory%20" + InvName + "&sender=VYSNVI&type=1&route=2";
 
-                        //string baseurl = "http://www.smsstriker.com/API/sms.php?username=vaishnavidairy&password=vyshnavi@123&from=VSALES&to=" + phonenumber + "&msg=Dear%20" + BranchName + "%20DCNO:%20" + DcNo + "%20Your%20indent%20delivery%20for%20today%20" + Date + "%20,%20" + ProductName + "Total%20Ltrs =" + TotalQty + "Sale%20Value%20" + Salevalue + "%20With%20Bal%20Inventory%20" + InvName + "&type=1";
-                        Stream data = client.OpenRead(baseurl);
-                        StreamReader reader = new StreamReader(data);
-                        string ResponseID = reader.ReadToEnd();
-                        data.Close();
-                        reader.Close();
-                    }
-                    else
-                    {
-                        string baseurl = "http://roundsms.com/api/sendhttp.php?authkey=Y2U3NGE2MGFkM2V&mobiles=" + phonenumber + "&message=Dear%20" + BranchName + "%20DCNO:%20" + DcNo + "%20Your%20indent%20delivery%20for%20today%20" + Date + "%20,%20" + ProductName + "Total%20Ltrs =" + TotalQty + "Sale%20Value%20" + Salevalue + "%20With%20Bal%20Inventory%20" + InvName + "&sender=VYSNVI&type=1&route=2";
-                        // string baseurl = "http://www.smsstriker.com/API/sms.php?username=vaishnavidairy&password=vyshnavi@123&from=VFWYRA&to=" + phonenumber + "&msg=Dear%20" + BranchName + "%20DCNO:%20" + DcNo + "%20Your%20indent%20delivery%20for%20today%20" + Date + "%20,%20" + ProductName + "Total%20Ltrs =" + TotalQty + "Sale%20Value%20" + Salevalue + "%20With%20Bal%20Inventory%20" + InvName + "&type=1";
-                        Stream data = client.OpenRead(baseurl);
-                        StreamReader reader = new StreamReader(data);
-                        string ResponseID = reader.ReadToEnd();
-                        data.Close();
-                        reader.Close();
-                    }
-                    string message = "Dear  " + BranchName + "  DCNO: " + DcNo + "  Your  indent  delivery  for  today  " + Date + "  ,  " + ProductName + " Tota  Ltrs =" + TotalQty + " Sale  Value  " + Salevalue + "  With  Bal  Inventory " + InvName + "";
+                //////        //string baseurl = "http://www.smsstriker.com/API/sms.php?username=vaishnavidairy&password=vyshnavi@123&from=VSALES&to=" + phonenumber + "&msg=Dear%20" + BranchName + "%20DCNO:%20" + DcNo + "%20Your%20indent%20delivery%20for%20today%20" + Date + "%20,%20" + ProductName + "Total%20Ltrs =" + TotalQty + "Sale%20Value%20" + Salevalue + "%20With%20Bal%20Inventory%20" + InvName + "&type=1";
+                //////        Stream data = client.OpenRead(baseurl);
+                //////        StreamReader reader = new StreamReader(data);
+                //////        string ResponseID = reader.ReadToEnd();
+                //////        data.Close();
+                //////        reader.Close();
+                //////    }
+                //////    else
+                //////    {
+                //////        string baseurl = "http://roundsms.com/api/sendhttp.php?authkey=Y2U3NGE2MGFkM2V&mobiles=" + phonenumber + "&message=Dear%20" + BranchName + "%20DCNO:%20" + DcNo + "%20Your%20indent%20delivery%20for%20today%20" + Date + "%20,%20" + ProductName + "Total%20Ltrs =" + TotalQty + "Sale%20Value%20" + Salevalue + "%20With%20Bal%20Inventory%20" + InvName + "&sender=VYSNVI&type=1&route=2";
+                //////        // string baseurl = "http://www.smsstriker.com/API/sms.php?username=vaishnavidairy&password=vyshnavi@123&from=VFWYRA&to=" + phonenumber + "&msg=Dear%20" + BranchName + "%20DCNO:%20" + DcNo + "%20Your%20indent%20delivery%20for%20today%20" + Date + "%20,%20" + ProductName + "Total%20Ltrs =" + TotalQty + "Sale%20Value%20" + Salevalue + "%20With%20Bal%20Inventory%20" + InvName + "&type=1";
+                //////        Stream data = client.OpenRead(baseurl);
+                //////        StreamReader reader = new StreamReader(data);
+                //////        string ResponseID = reader.ReadToEnd();
+                //////        data.Close();
+                //////        reader.Close();
+                //////    }
+                //////    string message = "Dear  " + BranchName + "  DCNO: " + DcNo + "  Your  indent  delivery  for  today  " + Date + "  ,  " + ProductName + " Tota  Ltrs =" + TotalQty + " Sale  Value  " + Salevalue + "  With  Bal  Inventory " + InvName + "";
 
-                    // string text = message.Replace("\n", "\n" + System.Environment.NewLine);
-                    cmd = new MySqlCommand("insert into smsinfo (agentid,branchid, msg,mobileno,msgtype,branchname,doe) values (@agentid,@branchid,@msg,@mobileno,@msgtype,@branchname,@doe)");
-                    cmd.Parameters.AddWithValue("@agentid", b_bid);
-                    cmd.Parameters.AddWithValue("@branchid", context.Session["CsoNo"].ToString());
-                    //cmd.Parameters.AddWithValue("@mainbranch", Session["SuperBranch"].ToString());
-                    cmd.Parameters.AddWithValue("@msg", message);
-                    cmd.Parameters.AddWithValue("@mobileno", phonenumber);
-                    cmd.Parameters.AddWithValue("@msgtype", "OnlineDelivery");
-                    cmd.Parameters.AddWithValue("@branchname", BranchName);
-                    cmd.Parameters.AddWithValue("@doe", ServerDateCurrentdate);
-                    vdm.insert(cmd);
-                }
+                //////    // string text = message.Replace("\n", "\n" + System.Environment.NewLine);
+                //////    cmd = new MySqlCommand("insert into smsinfo (agentid,branchid, msg,mobileno,msgtype,branchname,doe) values (@agentid,@branchid,@msg,@mobileno,@msgtype,@branchname,@doe)");
+                //////    cmd.Parameters.AddWithValue("@agentid", b_bid);
+                //////    cmd.Parameters.AddWithValue("@branchid", context.Session["CsoNo"].ToString());
+                //////    //cmd.Parameters.AddWithValue("@mainbranch", Session["SuperBranch"].ToString());
+                //////    cmd.Parameters.AddWithValue("@msg", message);
+                //////    cmd.Parameters.AddWithValue("@mobileno", phonenumber);
+                //////    cmd.Parameters.AddWithValue("@msgtype", "OnlineDelivery");
+                //////    cmd.Parameters.AddWithValue("@branchname", BranchName);
+                //////    cmd.Parameters.AddWithValue("@doe", ServerDateCurrentdate);
+                //////    vdm.insert(cmd);
+                //////}
                 var jsonSerializer = new JavaScriptSerializer();
                 var jsonString = String.Empty;
                 context.Request.InputStream.Position = 0;
@@ -4457,7 +4457,7 @@
                                         double DQty = 0;
                                         double.TryParse(o.RemainQty, out DQty);
                                         double TQty = DQty - PQty;
-                                        if (TQty >= 1)
+                                        if (TQty >= 0)
                                         {
                                             TQty = Math.Round(TQty, 2);
                                             if (DispType == "SO")
@@ -7586,17 +7586,17 @@
                             }
                         }
                     }
-                    if (phonenumber.Length == 10)
-                    {
-                        string Date = DateTime.Now.AddDays(1).ToString("dd/MM/yyyy");
-                        WebClient client = new WebClient();
-                        string baseurl = "http://www.smsstriker.com/API/sms.php?username=vaishnavidairy&password=Vys@2021&from=VYSSAL&to=" + phonenumber + "&msg=Dear%20" + BranchName + "%20,%20Your%20indent%20for%20Date%20" + Date + "%20,Milk%20" + ProductNameMD + "%20And%20" + ProductName + "%20,%20Curd%20" + ProductNameCD + "%20And%20" + ProductNameCDAND  + "%20,%20Others%20" + ProductNameBD + "%20And%20" + ProductNameBDAND + "%20,%20Total =" + TotalQty + "&type=1&template_id=1407165976493597741";
-                        Stream data = client.OpenRead(baseurl);
-                        StreamReader reader = new StreamReader(data);
-                        string ResponseID = reader.ReadToEnd();
-                        data.Close();
-                        reader.Close();
-                    }
+                    //if (phonenumber.Length == 10)
+                    //{
+                    //    string Date = DateTime.Now.AddDays(1).ToString("dd/MM/yyyy");
+                    //    WebClient client = new WebClient();
+                    //    string baseurl = "http://www.smsstriker.com/API/sms.php?username=vaishnavidairy&password=Vys@2021&from=VYSSAL&to=" + phonenumber + "&msg=Dear%20" + BranchName + "%20,%20Your%20indent%20for%20Date%20" + Date + "%20,Milk%20" + ProductNameMD + "%20And%20" + ProductName + "%20,%20Curd%20" + ProductNameCD + "%20And%20" + ProductNameCDAND  + "%20,%20Others%20" + ProductNameBD + "%20And%20" + ProductNameBDAND + "%20,%20Total =" + TotalQty + "&type=1&template_id=1407165976493597741";
+                    //    Stream data = client.OpenRead(baseurl);
+                    //    StreamReader reader = new StreamReader(data);
+                    //    string ResponseID = reader.ReadToEnd();
+                    //    data.Close();
+                    //    reader.Close();
+                    //}
 
                     var jsonSerializer = new JavaScriptSerializer();
                     var jsonString = String.Empty;
@@ -7960,9 +7960,11 @@
                                             float Lqty = 0;
                                             float.TryParse(o.LeakQty, out Lqty);
                                             float TQty = Aqty - Eqty;
-                                            if (TQty >= 1)
+                                            if (TQty >= 0)
                                             {
-                                                float TotIndentcost = TQty * UnitCost;
+                                                //float TotIndentcost = TQty * UnitCost;
+                                                double TotIndentcost = TQty * UnitCost;
+                                                TotIndentcost = Math.Round(TotIndentcost, 2);
                                                 cmd = new MySqlCommand("Update branchaccounts set Amount=Amount-@Amount where BranchId=@BranchId");
                                                 cmd.Parameters.AddWithValue("@Amount", TotIndentcost);
                                                 cmd.Parameters.AddWithValue("@BranchId", b_bid);
@@ -7990,14 +7992,15 @@
                                                         clobal = dtopbal.Rows[0]["clo_balance"].ToString();
                                                     }
                                                 }
-                                                cmd = new MySqlCommand("UPDATE agent_bal_trans set salesvalue=salesvalue-@Amount, clo_balance=clo_balance-@clAmount  where agentid=@BranchId AND inddate=@inddate");
+                                                cmd = new MySqlCommand("UPDATE agent_bal_trans set salesvalue=salesvalue-@Amount, clo_balance=clo_balance-@clAmount,modified_by=@modified_by  where agentid=@BranchId AND inddate=@inddate");
                                                 cmd.Parameters.AddWithValue("@Amount", TotIndentcost);
                                                 cmd.Parameters.AddWithValue("@BranchId", b_bid);
                                                 cmd.Parameters.AddWithValue("@inddate", loginindentdate);
                                                 cmd.Parameters.AddWithValue("@clAmount", TotIndentcost);
+                                                cmd.Parameters.AddWithValue("@modified_by", "7998");
                                                 if (vdm.Update(cmd) == 0)
                                                 {
-                                                    cmd = new MySqlCommand("Insert Into agent_bal_trans(agentid, opp_balance, inddate, salesvalue,  clo_balance, createdate, entryby,Paidamount) values (@BranchId,@opp_balance,@inddate, @salesvalue, @clo_balance, @createdate, @entryby,@Paidamount)");
+                                                    cmd = new MySqlCommand("Insert Into agent_bal_trans(agentid, opp_balance, inddate, salesvalue,  clo_balance, createdate, entryby,Paidamount,modified_by) values (@BranchId,@opp_balance,@inddate, @salesvalue, @clo_balance, @createdate, @entryby,@Paidamount,@modified_by)");
                                                     cmd.Parameters.AddWithValue("@BranchId", b_bid);
                                                     cmd.Parameters.AddWithValue("@opp_balance", clobal);
                                                     cmd.Parameters.AddWithValue("@Paidamount", 0);
@@ -8006,6 +8009,7 @@
                                                     cmd.Parameters.AddWithValue("@clo_balance", TotIndentcost);
                                                     cmd.Parameters.AddWithValue("@createdate", ServerDateCurrentdate);
                                                     cmd.Parameters.AddWithValue("@entryby", Username);
+                                                    cmd.Parameters.AddWithValue("@modified_by", "8010");
                                                     vdm.insert(cmd);
                                                 }
                                             }
@@ -8013,7 +8017,10 @@
                                             {
 
                                                 TQty = Math.Abs(TQty);
-                                                float TotIndentcost = TQty * UnitCost;
+                                                //double T_Qty = Convert.ToDouble(TQty);
+                                                //T_Qty = Math.Round(T_Qty, 2);
+                                                double TotIndentcost = TQty * UnitCost;
+                                                TotIndentcost = Math.Round(TotIndentcost, 2);
                                                 cmd = new MySqlCommand("Update branchaccounts set Amount=Amount+@Amount where BranchId=@BranchId");
                                                 cmd.Parameters.AddWithValue("@Amount", TotIndentcost);
                                                 cmd.Parameters.AddWithValue("@BranchId", b_bid);
@@ -8041,13 +8048,14 @@
                                                         clobal = dtopbal.Rows[0]["clo_balance"].ToString();
                                                     }
                                                 }
-                                                cmd = new MySqlCommand("UPDATE agent_bal_trans set salesvalue=salesvalue+@Amount, clo_balance=clo_balance+@Amount  where agentid=@BranchId AND inddate=@inddate");
+                                                cmd = new MySqlCommand("UPDATE agent_bal_trans set salesvalue=salesvalue+@Amount, clo_balance=clo_balance+@Amount,modified_by=@modified_by  where agentid=@BranchId AND inddate=@inddate");
                                                 cmd.Parameters.AddWithValue("@Amount", TotIndentcost);
                                                 cmd.Parameters.AddWithValue("@BranchId", b_bid);
                                                 cmd.Parameters.AddWithValue("@inddate", loginindentdate);
+                                                cmd.Parameters.AddWithValue("@modified_by", "8050");
                                                 if (vdm.Update(cmd) == 0)
                                                 {
-                                                    cmd = new MySqlCommand("Insert Into agent_bal_trans(agentid, opp_balance, inddate, salesvalue,  clo_balance, createdate, entryby,Paidamount) values (@BranchId,@opp_balance,@inddate, @salesvalue, @clo_balance, @createdate, @entryby,@Paidamount)");
+                                                    cmd = new MySqlCommand("Insert Into agent_bal_trans(agentid, opp_balance, inddate, salesvalue,  clo_balance, createdate, entryby,Paidamount,modified_by) values (@BranchId,@opp_balance,@inddate, @salesvalue, @clo_balance, @createdate, @entryby,@Paidamount,@modified_by)");
                                                     cmd.Parameters.AddWithValue("@BranchId", b_bid);
                                                     cmd.Parameters.AddWithValue("@opp_balance", clobal);
                                                     cmd.Parameters.AddWithValue("@Paidamount", 0);
@@ -8056,6 +8064,7 @@
                                                     cmd.Parameters.AddWithValue("@clo_balance", TotIndentcost);
                                                     cmd.Parameters.AddWithValue("@createdate", ServerDateCurrentdate);
                                                     cmd.Parameters.AddWithValue("@entryby", Username);
+                                                    cmd.Parameters.AddWithValue("@modified_by", "8062");
                                                     vdm.insert(cmd);
                                                 }
                                             }
@@ -8100,14 +8109,15 @@
                                             }
                                             //naveen kumar
                                             //cmd = new MySqlCommand("Update agent_bal_trans set salesvalue=salesvalue+@Amount, clo_balance=clo_balance+@Amount  where agentid=@BranchId");
-                                            cmd = new MySqlCommand("UPDATE agent_bal_trans set salesvalue=salesvalue+@Amount, clo_balance=clo_balance+@Amount  where agentid=@BranchId AND inddate=@inddate");
+                                            cmd = new MySqlCommand("UPDATE agent_bal_trans set salesvalue=salesvalue+@Amount, clo_balance=clo_balance+@Amount,modified_by=@modified_by  where agentid=@BranchId AND inddate=@inddate");
                                             cmd.Parameters.AddWithValue("@inddate", loginindentdate);
                                             cmd.Parameters.AddWithValue("@Amount", TotRate);
                                             cmd.Parameters.AddWithValue("@BranchId", b_bid);
+                                            cmd.Parameters.AddWithValue("@modified_by", "8111");
                                             if (vdm.Update(cmd) == 0)
                                             {
                                                 double clsval = Convert.ToDouble(clobal) + TotRate;
-                                                cmd = new MySqlCommand("Insert Into agent_bal_trans(agentid, opp_balance, inddate, salesvalue, clo_balance, createdate, entryby,Paidamount) values (@BranchId,@opp_balance,@inddate, @salesvalue, @clo_balance, @createdate, @entryby,@Paidamount)");
+                                                cmd = new MySqlCommand("Insert Into agent_bal_trans(agentid, opp_balance, inddate, salesvalue, clo_balance, createdate, entryby,Paidamount,modified_by) values (@BranchId,@opp_balance,@inddate, @salesvalue, @clo_balance, @createdate, @entryby,@Paidamount,@modified_by)");
                                                 cmd.Parameters.AddWithValue("@BranchId", b_bid);
                                                 cmd.Parameters.AddWithValue("@opp_balance", clobal);
                                                 cmd.Parameters.AddWithValue("@inddate", loginindentdate);
@@ -8116,6 +8126,7 @@
                                                 cmd.Parameters.AddWithValue("@clo_balance", clsval);
                                                 cmd.Parameters.AddWithValue("@createdate", ServerDateCurrentdate);
                                                 cmd.Parameters.AddWithValue("@entryby", Username);
+                                                cmd.Parameters.AddWithValue("@modified_by", "8124");
                                                 vdm.insert(cmd);
                                             }
                                             long DcNo = 0;
@@ -8304,13 +8315,14 @@
                                                             clobal = dtopbal.Rows[0]["clo_balance"].ToString();
                                                         }
                                                     }
-                                                    cmd = new MySqlCommand("UPDATE agent_bal_trans set salesvalue=salesvalue+@Amount, clo_balance=clo_balance+@Amount  where agentid=@BranchId AND inddate=@inddate");
+                                                    cmd = new MySqlCommand("UPDATE agent_bal_trans set salesvalue=salesvalue+@Amount, clo_balance=clo_balance+@Amount,modified_by=@modified_by  where agentid=@BranchId AND inddate=@inddate");
                                                     cmd.Parameters.AddWithValue("@inddate", loginindentdate);
                                                     cmd.Parameters.AddWithValue("@Amount", TotIndentcost);
                                                     cmd.Parameters.AddWithValue("@BranchId", b_bid);
+                                                    cmd.Parameters.AddWithValue("@modified_by", "8317");
                                                     if (vdm.Update(cmd) == 0)
                                                     {
-                                                        cmd = new MySqlCommand("Insert Into agent_bal_trans(agentid, opp_balance, inddate, salesvalue,  clo_balance, createdate, entryby,Paidamount) values (@BranchId,@opp_balance,@inddate, @salesvalue, @clo_balance, @createdate, @entryby,@Paidamount)");
+                                                        cmd = new MySqlCommand("Insert Into agent_bal_trans(agentid, opp_balance, inddate, salesvalue,  clo_balance, createdate, entryby,Paidamount,modified_by) values (@BranchId,@opp_balance,@inddate, @salesvalue, @clo_balance, @createdate, @entryby,@Paidamount,@modified_by)");
                                                         cmd.Parameters.AddWithValue("@BranchId", b_bid);
                                                         cmd.Parameters.AddWithValue("@opp_balance", clobal);
                                                         cmd.Parameters.AddWithValue("@inddate", loginindentdate);
@@ -8319,6 +8331,7 @@
                                                         cmd.Parameters.AddWithValue("@clo_balance", TotIndentcost);
                                                         cmd.Parameters.AddWithValue("@createdate", ServerDateCurrentdate);
                                                         cmd.Parameters.AddWithValue("@entryby", Username);
+                                                        cmd.Parameters.AddWithValue("@modified_by", "8329");
                                                         vdm.insert(cmd);
                                                     }
                                                 }//modification for addning new product from existing indent for updating sale,closing branch_acc,agent_bal_trans  akbar & ravindra 
@@ -8335,7 +8348,7 @@
                                                         float Lqty = 0;
                                                         float.TryParse(o.LeakQty, out Lqty);
                                                         float TQty = Aqty - Eqty;
-                                                        if (TQty >= 1)
+                                                        if (TQty >= 0)
                                                         {
                                                             float TotIndentcost = TQty * UnitCost;
                                                             cmd = new MySqlCommand("Update branchaccounts set Amount=Amount-@Amount where BranchId=@BranchId");
@@ -8365,13 +8378,14 @@
                                                                     clobal = dtopbal.Rows[0]["clo_balance"].ToString();
                                                                 }
                                                             }
-                                                            cmd = new MySqlCommand("UPDATE agent_bal_trans set salesvalue=salesvalue-@Amount, clo_balance=clo_balance-@Amount  where agentid=@BranchId AND inddate=@inddate");
+                                                            cmd = new MySqlCommand("UPDATE agent_bal_trans set salesvalue=salesvalue-@Amount, clo_balance=clo_balance-@Amount,modified_by=@modified_by  where agentid=@BranchId AND inddate=@inddate");
                                                             cmd.Parameters.AddWithValue("@inddate", loginindentdate);
                                                             cmd.Parameters.AddWithValue("@Amount", TotIndentcost);
                                                             cmd.Parameters.AddWithValue("@BranchId", b_bid);
+                                                            cmd.Parameters.AddWithValue("@modified_by", "8380");
                                                             if (vdm.Update(cmd) == 0)
                                                             {
-                                                                cmd = new MySqlCommand("Insert Into agent_bal_trans(agentid, opp_balance, inddate, salesvalue,  clo_balance, createdate, entryby,Paidamount) values (@BranchId,@opp_balance,@inddate, @salesvalue, @clo_balance, @createdate, @entryby,@Paidamount)");
+                                                                cmd = new MySqlCommand("Insert Into agent_bal_trans(agentid, opp_balance, inddate, salesvalue,  clo_balance, createdate, entryby,Paidamount,modified_by) values (@BranchId,@opp_balance,@inddate, @salesvalue, @clo_balance, @createdate, @entryby,@Paidamount,@modified_by)");
                                                                 cmd.Parameters.AddWithValue("@BranchId", b_bid);
                                                                 cmd.Parameters.AddWithValue("@opp_balance", clobal);
                                                                 cmd.Parameters.AddWithValue("@inddate", loginindentdate);
@@ -8380,6 +8394,7 @@
                                                                 cmd.Parameters.AddWithValue("@clo_balance", TotIndentcost);
                                                                 cmd.Parameters.AddWithValue("@createdate", ServerDateCurrentdate);
                                                                 cmd.Parameters.AddWithValue("@entryby", Username);
+                                                                cmd.Parameters.AddWithValue("@modified_by", "8392");
                                                                 vdm.insert(cmd);
                                                             }
                                                         }
@@ -8414,13 +8429,14 @@
                                                                     clobal = dtopbal.Rows[0]["clo_balance"].ToString();
                                                                 }
                                                             }
-                                                            cmd = new MySqlCommand("UPDATE agent_bal_trans set salesvalue=salesvalue+@Amount, clo_balance=clo_balance+@Amount  where agentid=@BranchId AND inddate=@inddate");
+                                                            cmd = new MySqlCommand("UPDATE agent_bal_trans set salesvalue=salesvalue+@Amount, clo_balance=clo_balance+@Amount,modified_by=@modified_by  where agentid=@BranchId AND inddate=@inddate");
                                                             cmd.Parameters.AddWithValue("@inddate", loginindentdate);
                                                             cmd.Parameters.AddWithValue("@Amount", TotIndentcost);
                                                             cmd.Parameters.AddWithValue("@BranchId", b_bid);
+                                                            cmd.Parameters.AddWithValue("@modified_by", "8431");
                                                             if (vdm.Update(cmd) == 0)
                                                             {
-                                                                cmd = new MySqlCommand("Insert Into agent_bal_trans(agentid, opp_balance, inddate, salesvalue,  clo_balance, createdate, entryby,Paidamount) values (@BranchId,@opp_balance,@inddate, @salesvalue, @clo_balance, @createdate, @entryby,@Paidamount)");
+                                                                cmd = new MySqlCommand("Insert Into agent_bal_trans(agentid, opp_balance, inddate, salesvalue,  clo_balance, createdate, entryby,Paidamount,modified_by) values (@BranchId,@opp_balance,@inddate, @salesvalue, @clo_balance, @createdate, @entryby,@Paidamount,@modified_by)");
                                                                 cmd.Parameters.AddWithValue("@BranchId", b_bid);
                                                                 cmd.Parameters.AddWithValue("@opp_balance", clobal);
                                                                 cmd.Parameters.AddWithValue("@inddate", loginindentdate);
@@ -8429,6 +8445,7 @@
                                                                 cmd.Parameters.AddWithValue("@clo_balance", TotIndentcost);
                                                                 cmd.Parameters.AddWithValue("@createdate", ServerDateCurrentdate);
                                                                 cmd.Parameters.AddWithValue("@entryby", Username);
+                                                                cmd.Parameters.AddWithValue("@modified_by", "8443");
                                                                 vdm.insert(cmd);
                                                             }
                                                         }
@@ -8474,14 +8491,15 @@
                                                         clobal = dtopbal.Rows[0]["clo_balance"].ToString();
                                                     }
                                                 }
-                                                cmd = new MySqlCommand("UPDATE agent_bal_trans set salesvalue=salesvalue+@Amount, clo_balance=clo_balance+@Amount  where agentid=@BranchId AND inddate=@inddate");
+                                                cmd = new MySqlCommand("UPDATE agent_bal_trans set salesvalue=salesvalue+@Amount, clo_balance=clo_balance+@Amount,modified_by=@modified_by  where agentid=@BranchId AND inddate=@inddate");
                                                 cmd.Parameters.AddWithValue("@inddate", loginindentdate);
                                                 cmd.Parameters.AddWithValue("@Amount", TotIndentcost);
                                                 cmd.Parameters.AddWithValue("@BranchId", b_bid);
+                                                cmd.Parameters.AddWithValue("@modified_by", "8493");
                                                 if (vdm.Update(cmd) == 0)
                                                 {
                                                     double clsval = Convert.ToDouble(clobal) + TotIndentcost;
-                                                    cmd = new MySqlCommand("Insert Into agent_bal_trans(agentid, opp_balance, inddate, salesvalue,  clo_balance, createdate, entryby,Paidamount) values (@BranchId,@opp_balance,@inddate, @salesvalue, @clo_balance, @createdate, @entryby,@Paidamount)");
+                                                    cmd = new MySqlCommand("Insert Into agent_bal_trans(agentid, opp_balance, inddate, salesvalue,  clo_balance, createdate, entryby,Paidamount,modified_by) values (@BranchId,@opp_balance,@inddate, @salesvalue, @clo_balance, @createdate, @entryby,@Paidamount,@modified_by)");
                                                     cmd.Parameters.AddWithValue("@BranchId", b_bid);
                                                     cmd.Parameters.AddWithValue("@opp_balance", clobal);
                                                     cmd.Parameters.AddWithValue("@inddate", loginindentdate);
@@ -8490,6 +8508,7 @@
                                                     cmd.Parameters.AddWithValue("@clo_balance", clsval);
                                                     cmd.Parameters.AddWithValue("@createdate", ServerDateCurrentdate);
                                                     cmd.Parameters.AddWithValue("@entryby", Username);
+                                                    cmd.Parameters.AddWithValue("@modified_by", "8506");
                                                     vdm.insert(cmd);
                                                 }
                                             }//akbar & ravindra
@@ -8527,13 +8546,14 @@
                                                     clobal = dtopbal.Rows[0]["clo_balance"].ToString();
                                                 }
                                             }
-                                            cmd = new MySqlCommand("Update agent_bal_trans set salesvalue=salesvalue+@Amount, clo_balance=clo_balance+@Amount  where agentid=@BranchId AND inddate=@inddate");
+                                            cmd = new MySqlCommand("Update agent_bal_trans set salesvalue=salesvalue+@Amount, clo_balance=clo_balance+@Amount,modified_by=@modified_by  where agentid=@BranchId AND inddate=@inddate");
                                             cmd.Parameters.AddWithValue("@Amount", TotRate);
                                             cmd.Parameters.AddWithValue("@BranchId", b_bid);
                                             cmd.Parameters.AddWithValue("@inddate", loginindentdate);
+                                            cmd.Parameters.AddWithValue("@modified_by", "8548");
                                             if (vdm.Update(cmd) == 0)
                                             {
-                                                cmd = new MySqlCommand("Insert Into agent_bal_trans(agentid, opp_balance, inddate, salesvalue,  clo_balance, createdate, entryby,Paidamount) values (@BranchId,@opp_balance,@inddate, @salesvalue, @clo_balance, @createdate, @entryby,@Paidamount)");
+                                                cmd = new MySqlCommand("Insert Into agent_bal_trans(agentid, opp_balance, inddate, salesvalue,  clo_balance, createdate, entryby,Paidamount,modified_by) values (@BranchId,@opp_balance,@inddate, @salesvalue, @clo_balance, @createdate, @entryby,@Paidamount,@modified_by)");
                                                 cmd.Parameters.AddWithValue("@BranchId", b_bid);
                                                 cmd.Parameters.AddWithValue("@opp_balance", clobal);
                                                 cmd.Parameters.AddWithValue("@inddate", loginindentdate);
@@ -8542,6 +8562,7 @@
                                                 cmd.Parameters.AddWithValue("@clo_balance", TotRate);
                                                 cmd.Parameters.AddWithValue("@createdate", ServerDateCurrentdate);
                                                 cmd.Parameters.AddWithValue("@entryby", Username);
+                                                cmd.Parameters.AddWithValue("@modified_by", "8560");
                                                 vdm.insert(cmd);
                                             }
                                         }
