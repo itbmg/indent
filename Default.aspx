@@ -525,7 +525,7 @@
             $('#divHide').css('display', 'none');
             $('#divRouteOrder').css('display', 'none');
             $('#divFillScreen').css('display', 'block');
-            $('#divFillScreen').setTemplateURL('Orders13.htm');
+            $('#divFillScreen').setTemplateURL('Orders14.htm');
             $('#divFillScreen').processTemplate();
             if (bid != "") {
                 BranchChane();
@@ -1684,7 +1684,7 @@
             $('#divHide').css('display', 'none');
             $('#divRouteOrder').css('display', 'none');
             $('#divFillScreen').css('display', 'block');
-            $('#divFillScreen').setTemplateURL('Delivers8.htm');
+            $('#divFillScreen').setTemplateURL('Delivers9.htm');
             $('#divFillScreen').processTemplate();
             if (bid != "") {
                 BranchChane();
@@ -3161,11 +3161,11 @@
                 DataTable.push({ sno: Sno, ProductCode: ProductName, Productsno: ProductSno, Qty: Qty, Rate: orderunitRate, invqty: invqty, Total: Total, Unitqty: UnitQty, Units: Units, orderunitqty: 0, orderunitRate: UnitPrice, Desciption: Description, PrevQty: Prevqty, Qtypkts: 0, tubQty: 0 });
                 //if (DairyStatus == "Delivers") {
                 //    BindDeliverInventory();
-                //    $('#divFillScreen').setTemplateURL('Delivers8.htm');
+                //    $('#divFillScreen').setTemplateURL('Delivers9.htm');
                 //    $('#divFillScreen').processTemplate(DataTable);
                 //}
                 //else {
-                    $('#divFillScreen').setTemplateURL('Orders13.htm');
+                    $('#divFillScreen').setTemplateURL('Orders14.htm');
                     $('#divFillScreen').processTemplate(DataTable);
                /* }*/
                 getofferproducts();
@@ -3260,11 +3260,11 @@
                 
                /* if (DairyStatus == "Delivers") {*/
                     BindDeliverInventory();
-                    $('#divFillScreen').setTemplateURL('Delivers8.htm');
+                    $('#divFillScreen').setTemplateURL('Delivers9.htm');
                     $('#divFillScreen').processTemplate(DataTable);
                 //}
                 //else {
-                //    $('#divFillScreen').setTemplateURL('Orders13.htm');
+                //    $('#divFillScreen').setTemplateURL('Orders14.htm');
                 //    $('#divFillScreen').processTemplate(DataTable);
                 //}
                 getofferproducts();
@@ -3421,7 +3421,7 @@
             var DQty = 0;
             var RQty = 0;
             DeliverTable.push({ sno: Sno, ProductCode: ProductName, Productsno: ProductSno, LeakQty: leak, HdnSno: hdnISno, IndentNo: txtIndentNo, Qty: Qty, DQty: DQty, Status: Delivered, orderunitRate: UnitPrice, HdnIndentSno: HdnIndentSno, RQty: RemainQty, Units: UnitQty });//added uomqty
-            $('#divFillScreen').setTemplateURL('Delivers8.htm');
+            $('#divFillScreen').setTemplateURL('Delivers9.htm');
             $('#divFillScreen').processTemplate(DeliverTable);
 
             //$('#divOfferindent').setTemplateURL('OfferDelivery.htm');
