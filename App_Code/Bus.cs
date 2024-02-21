@@ -7759,9 +7759,9 @@
                                 }
                                 else
                                 {
-                                    int clsvalue = 0;
-                                    int.TryParse(o.ReceivedQty, NumberStyles.Number, CultureInfo.CurrentCulture.NumberFormat, out clsvalue);
-                                    clsvalue = Aqty - clsvalue;
+                                    //int clsvalue = 0;
+                                    //int.TryParse(o.ReceivedQty, NumberStyles.Number, CultureInfo.CurrentCulture.NumberFormat, out clsvalue);
+                                    //clsvalue = Aqty - clsvalue;
                                     cmd = new MySqlCommand("update inventory_monitor set Qty=Qty-@Qty,CTripid=@ctripid where Inv_Sno=@Inv_Sno and BranchId=@BranchId");
                                     cmd.Parameters.AddWithValue("@Qty", o.ReceivedQty);
                                     cmd.Parameters.AddWithValue("@Inv_Sno", o.InvSno);
@@ -7770,7 +7770,7 @@
                                     if (vdm.Update(cmd) == 0)
                                     {
                                         cmd = new MySqlCommand("Insert into inventory_monitor(Qty,Inv_Sno,BranchId,CTripid) values(@Qty,@Inv_Sno,@BranchId,@ctripid)");
-                                        cmd.Parameters.AddWithValue("@Qty", clsvalue);
+                                        cmd.Parameters.AddWithValue("@Qty", o.ReceivedQty);
                                         cmd.Parameters.AddWithValue("@Inv_Sno", o.InvSno);
                                         cmd.Parameters.AddWithValue("@BranchId", b_bid);
                                         cmd.Parameters.AddWithValue("@ctripid", context.Session["TripdataSno"].ToString());
