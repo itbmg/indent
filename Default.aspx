@@ -1684,7 +1684,7 @@
             $('#divHide').css('display', 'none');
             $('#divRouteOrder').css('display', 'none');
             $('#divFillScreen').css('display', 'block');
-            $('#divFillScreen').setTemplateURL('Delivers9.htm');
+            $('#divFillScreen').setTemplateURL('Delivers8.htm');
             $('#divFillScreen').processTemplate();
             if (bid != "") {
                 BranchChane();
@@ -3260,7 +3260,7 @@
                 
                /* if (DairyStatus == "Delivers") {*/
                     BindDeliverInventory();
-                    $('#divFillScreen').setTemplateURL('Delivers9.htm');
+                    $('#divFillScreen').setTemplateURL('Delivers8.htm');
                     $('#divFillScreen').processTemplate(DataTable);
                 //}
                 //else {
@@ -3421,7 +3421,7 @@
             var DQty = 0;
             var RQty = 0;
             DeliverTable.push({ sno: Sno, ProductCode: ProductName, Productsno: ProductSno, LeakQty: leak, HdnSno: hdnISno, IndentNo: txtIndentNo, Qty: Qty, DQty: DQty, Status: Delivered, orderunitRate: UnitPrice, HdnIndentSno: HdnIndentSno, RQty: RemainQty, Units: UnitQty });//added uomqty
-            $('#divFillScreen').setTemplateURL('Delivers9.htm');
+            $('#divFillScreen').setTemplateURL('Delivers8.htm');
             $('#divFillScreen').processTemplate(DeliverTable);
 
             //$('#divOfferindent').setTemplateURL('OfferDelivery.htm');
