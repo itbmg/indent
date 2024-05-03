@@ -525,7 +525,7 @@
             $('#divHide').css('display', 'none');
             $('#divRouteOrder').css('display', 'none');
             $('#divFillScreen').css('display', 'block');
-            $('#divFillScreen').setTemplateURL('Orders14.htm');
+            $('#divFillScreen').setTemplateURL('Orders15.htm');
             $('#divFillScreen').processTemplate();
             if (bid != "") {
                 BranchChane();
@@ -1684,7 +1684,7 @@
             $('#divHide').css('display', 'none');
             $('#divRouteOrder').css('display', 'none');
             $('#divFillScreen').css('display', 'block');
-            $('#divFillScreen').setTemplateURL('Delivers8.htm');
+            $('#divFillScreen').setTemplateURL('Delivers9.htm');
             $('#divFillScreen').processTemplate();
             if (bid != "") {
                 BranchChane();
@@ -2832,7 +2832,7 @@
                     if (txtsno == "" || txtUnitQty == "") {
                     }
                     else {
-                        Orderdetails.push({ SNo: $(this).find('#txtsno').text(), ProductSno: $(this).find('#hdnProductSno').val(), Product: $(this).find('#txtproduct').text(), Rate: $(this).find('#hdnRate').val(), Total: $(this).find('#txtOrderTotal').text(), Unitsqty: $(this).find('#txtQtypkts').val(), Qty: $(this).find('#hdnQty').val(), UnitCost: $(this).find('#txtOrderRate').text(), tubQty: $(this).find('#txtTubQty').val(), PktQty: $(this).find('#txtQtypkts').val(), Invqty: $(this).find('#hdninvQty').val(), UnitQty: $(this).find('#hdnUnitQty').val() });
+                        Orderdetails.push({ SNo: $(this).find('#txtsno').text(), ProductSno: $(this).find('#hdnProductSno').val(), Product: $(this).find('#txtproduct').text(), Rate: $(this).find('#hdnRate').val(), Total: $(this).find('#txtOrderTotal').text(), Unitsqty: $(this).find('#txtQtypkts').val(), Qty: $(this).find('#hdnQty').val(), UnitCost: $(this).find('#txtOrderRate').text(), discountprice: $(this).find('#hdnDiscountRate').val(), tubQty: $(this).find('#txtTubQty').val(), PktQty: $(this).find('#txtQtypkts').val(), Invqty: $(this).find('#hdninvQty').val(), UnitQty: $(this).find('#hdnUnitQty').val() });
                     }
                 });
                 var offerrows = $("#table_offerdetails tr:gt(0)");
@@ -2911,7 +2911,7 @@
                     if (txtsno == "" || txtUnitQty == "") {
                     }
                     else {
-                        Orderdetails.push({ SNo: $(this).find('#txtsno').text(), ProductSno: $(this).find('#hdnProductSno').val(), Product: $(this).find('#txtproduct').text(), Rate: $(this).find('#hdnltrRate').val(), Total: $(this).find('#txtOrderTotal').text(), ReturnQty: $(this).find('#hdnltrQty').val(), Qty: $(this).find('#hdnQty').val(), orderunitRate: $(this).find('#txtOrderRate').text(), tubQty: $(this).find('#txtTubQty').val(), PktQty: $(this).find('#txtQtypkts').val(), Invqty: $(this).find('#hdninvQty').val(), UnitQty: $(this).find('#hdnUnitQty').val(), IndentNo: $(this).find('#hdnIndentNo').val(), hdnSno: $(this).find('#hdn_Sno').val(), HdnIndentSno: $(this).find('#HdnIndentSno').val(), Status: $(this).find('#ddlDelivered').val() });
+                        Orderdetails.push({ SNo: $(this).find('#txtsno').text(), ProductSno: $(this).find('#hdnProductSno').val(), Product: $(this).find('#txtproduct').text(), Rate: $(this).find('#hdnltrRate').val(), discountprice: $(this).find('#hdnDiscountRate').val(), Total: $(this).find('#txtOrderTotal').text(), ReturnQty: $(this).find('#hdnltrQty').val(), Qty: $(this).find('#hdnQty').val(), orderunitRate: $(this).find('#txtOrderRate').text(), tubQty: $(this).find('#txtTubQty').val(), PktQty: $(this).find('#txtQtypkts').val(), Invqty: $(this).find('#hdninvQty').val(), UnitQty: $(this).find('#hdnUnitQty').val(), IndentNo: $(this).find('#hdnIndentNo').val(), hdnSno: $(this).find('#hdn_Sno').val(), HdnIndentSno: $(this).find('#HdnIndentSno').val(), Status: $(this).find('#ddlDelivered').val() });
                     }
                 });
                 var offerrows = $("#table_offerdetails tr:gt(0)");
@@ -3101,6 +3101,7 @@
                 var txtProductSno = "";
                 var txtOrderQty = "";
                 var txtOrderRate = "";
+                var hdnDiscountRate = "";
                 var txtOrderTotal = "";
                 var txtUnitqty = "";
                 var txtUnits = "";
@@ -3140,6 +3141,7 @@
                         txtProductSno = $(this).find('#hdnProductSno').val();
                         txtOrderQty = $(this).find('#txtOrderQty').val();
                         txtorderunitRate = $(this).find('#txtOrderRate').text();
+                        hdnDiscountRate = $(this).find('#hdnDiscountRate').val();
                         txtOrderTotal = $(this).find('#txtOrderTotal').text();
                         //orderunitqty = $(this).find('#txtUnitQty').val();
                         orderunitqty = $(this).find('#txtQtypkts').val();
@@ -3153,19 +3155,19 @@
                         txtPrvQty = $(this).find('#txtPrvQty').text();
                         txtTubQty = $(this).find('#txtTubQty').val();
                         txtQtypkts = $(this).find('#txtQtypkts').val();
-                        DataTable.push({ sno: txtsno, ProductCode: txtProductName, Productsno: txtProductSno, Qty: txtOrderQty, Rate: txtOrderRate, Total: txtOrderTotal, Unitqty: txtUnitqty, invqty: txtinvqty, Units: txtUnits, orderunitqty: orderunitqty, orderunitRate: txtorderunitRate, Desciption: txtDescription, PrevQty: txtPrvQty, Qtypkts: txtQtypkts, tubQty: txtTubQty });
+                        DataTable.push({ sno: txtsno, ProductCode: txtProductName, Productsno: txtProductSno, Qty: txtOrderQty, Rate: txtOrderRate, discountprice: hdnDiscountRate, Total: txtOrderTotal, Unitqty: txtUnitqty, invqty: txtinvqty, Units: txtUnits, orderunitqty: orderunitqty, orderunitRate: txtorderunitRate, Desciption: txtDescription, PrevQty: txtPrvQty, Qtypkts: txtQtypkts, tubQty: txtTubQty });
                     }
                 });
                 var Sno = parseInt(txtsno) + 1;
                 var Prevqty = 0;
-                DataTable.push({ sno: Sno, ProductCode: ProductName, Productsno: ProductSno, Qty: Qty, Rate: orderunitRate, invqty: invqty, Total: Total, Unitqty: UnitQty, Units: Units, orderunitqty: 0, orderunitRate: UnitPrice, Desciption: Description, PrevQty: Prevqty, Qtypkts: 0, tubQty: 0 });
+                DataTable.push({ sno: Sno, ProductCode: ProductName, Productsno: ProductSno, Qty: Qty, Rate: orderunitRate, invqty: invqty, Total: Total, Unitqty: UnitQty, Units: Units, orderunitqty: 0, orderunitRate: UnitPrice, discountprice: discountprice, Desciption: Description, PrevQty: Prevqty, Qtypkts: 0, tubQty: 0 });
                 //if (DairyStatus == "Delivers") {
                 //    BindDeliverInventory();
                 //    $('#divFillScreen').setTemplateURL('Delivers9.htm');
                 //    $('#divFillScreen').processTemplate(DataTable);
                 //}
                 //else {
-                    $('#divFillScreen').setTemplateURL('Orders14.htm');
+                    $('#divFillScreen').setTemplateURL('Orders15.htm');
                     $('#divFillScreen').processTemplate(DataTable);
                /* }*/
                 getofferproducts();
@@ -3192,6 +3194,7 @@
                 var txtProductSno = "";
                 var txtOrderQty = "";
                 var txtOrderRate = "";
+                var hdnDiscountRate = "";
                 var txtOrderTotal = "";
                 var txtUnitqty = "";
                 var txtUnits = "";
@@ -3236,7 +3239,7 @@
                         txtOrderQty = $(this).find('#txtOrderQty').val();
                         txtorderunitRate = $(this).find('#txtOrderRate').text();
                         txtOrderTotal = $(this).find('#txtOrderTotal').text();
-                        //orderunitqty = $(this).find('#txtUnitQty').val();
+                        hdnDiscountRate = $(this).find('#hdnDiscountRate').val();
                         orderunitqty = $(this).find('#txtQtypkts').val();
                         txtIndentNo = $(this).find('#hdnIndentNo').val();
                         txthdnSno = $(this).find('#hdn_Sno').val();
@@ -3250,21 +3253,21 @@
                         txtTubQty = $(this).find('#txtTubQty').val();
                         txtQtypkts = $(this).find('#txtQtypkts').val();
                         txtLtrQty = $(this).find('#hdnltrQty').val();
-                        DataTable.push({ sno: txtsno, ProductCode: txtProductName, Productsno: txtProductSno, Qty: txtOrderQty, ltr_rate: txtOrderRate, Total: txtOrderTotal, Unitqty: txtUnitqty, invqty: txtinvqty, Units: txtUnits, orderunitqty: orderunitqty, orderunitRate: txtorderunitRate, Desciption: txtDescription, PrevQty: txtPrvQty, Qtypkts: txtQtypkts, tubQty: txtTubQty, ltr_qty: txtLtrQty, IndentNo: txtIndentNo, HdnSno: txthdnSno });
+                        DataTable.push({ sno: txtsno, ProductCode: txtProductName, Productsno: txtProductSno, Qty: txtOrderQty, ltr_rate: txtOrderRate, Total: txtOrderTotal, Unitqty: txtUnitqty, invqty: txtinvqty, Units: txtUnits, orderunitqty: orderunitqty, orderunitRate: txtorderunitRate, discountprice: hdnDiscountRate, Desciption: txtDescription, PrevQty: txtPrvQty, Qtypkts: txtQtypkts, tubQty: txtTubQty, ltr_qty: txtLtrQty, IndentNo: txtIndentNo, HdnSno: txthdnSno });
                     }
                 });
                 var Sno = parseInt(txtsno) + 1;
                 var Prevqty = 0;
                 var hdnISno = 0;
-                DataTable.push({ sno: Sno, ProductCode: ProductName, Productsno: ProductSno, ltr_qty: 0, ltr_rate: UnitPrice, invqty: invqty, Total: Total, Unitqty: UnitQty, Units: Units, orderunitqty: 0, orderunitRate: orderunitRate, Desciption: Description, PrevQty: Prevqty, Qtypkts: 0, tubQty: 0, HdnSno: hdnISno, IndentNo: txtIndentNo });
+                DataTable.push({ sno: Sno, ProductCode: ProductName, Productsno: ProductSno, ltr_qty: 0, ltr_rate: UnitPrice, discountprice: discountprice, invqty: invqty, Total: Total, Unitqty: UnitQty, Units: Units, orderunitqty: 0, orderunitRate: orderunitRate, Desciption: Description, PrevQty: Prevqty, Qtypkts: 0, tubQty: 0, HdnSno: hdnISno, IndentNo: txtIndentNo });
                 
                /* if (DairyStatus == "Delivers") {*/
                     BindDeliverInventory();
-                    $('#divFillScreen').setTemplateURL('Delivers8.htm');
+                    $('#divFillScreen').setTemplateURL('Delivers9.htm');
                     $('#divFillScreen').processTemplate(DataTable);
                 //}
                 //else {
-                //    $('#divFillScreen').setTemplateURL('Orders14.htm');
+                //    $('#divFillScreen').setTemplateURL('Orders15.htm');
                 //    $('#divFillScreen').processTemplate(DataTable);
                 //}
                 getofferproducts();
@@ -3421,7 +3424,7 @@
             var DQty = 0;
             var RQty = 0;
             DeliverTable.push({ sno: Sno, ProductCode: ProductName, Productsno: ProductSno, LeakQty: leak, HdnSno: hdnISno, IndentNo: txtIndentNo, Qty: Qty, DQty: DQty, Status: Delivered, orderunitRate: UnitPrice, HdnIndentSno: HdnIndentSno, RQty: RemainQty, Units: UnitQty });//added uomqty
-            $('#divFillScreen').setTemplateURL('Delivers8.htm');
+            $('#divFillScreen').setTemplateURL('Delivers9.htm');
             $('#divFillScreen').processTemplate(DeliverTable);
 
             //$('#divOfferindent').setTemplateURL('OfferDelivery.htm');
@@ -3538,6 +3541,7 @@
         var Description;
         var ProductSno = 0;
         var invqty = 0;
+        var discountprice = 0;
         function ProductNameChane(sno) {
             ProductSno = sno.value;
             var BranchID = document.getElementById('ddlBranchName').value;
@@ -3549,6 +3553,7 @@
                     QtyUnit = msg[0].Unitqty;
                     Units = msg[0].Units;
                     orderunitRate = msg[0].orderunitRate;
+                    discountprice = msg[0].discountprice;
                     Description = msg[0].Desciption;
                     invqty = msg[0].invqty;
                     if (DairyStatus == "Delivers") {
