@@ -10030,10 +10030,15 @@
                                             string AgentUnitPrice = dr["Aunitprice"].ToString();
                                             string BranchUnitPrice = dr["BUnitPrice"].ToString();
                                             string BDiscountPrice = dr["BDiscountPrice"].ToString();
+                                            string Adiscountprice = dr["Adiscountprice"].ToString();
                                             float Rate = 0; float discountprice = 0;
                                             if (AgentUnitPrice != "0")
                                             {
                                                 Rate = (float)dr["Aunitprice"];
+                                            }
+                                            if (Adiscountprice != "0")
+                                            {
+                                                discountprice = (float)dr["Adiscountprice"];
                                             }
                                             if (Rate == 0)
                                             {
@@ -10043,7 +10048,7 @@
                                             //{
                                             //    Rate = (double)dr["unitprice"];
                                             //}
-                                            if (Rate == 0)
+                                            if (discountprice == 0)
                                             {
                                                 discountprice = (float)dr["BDiscountPrice"];
                                             }
@@ -10418,8 +10423,6 @@
                                                     discountprice = BDiscountPrice;
                                                 }
                                             }
-
-
                                             if (dr["unitCost"].ToString() != "")
                                             {
                                                 Rate = (float)dr["unitCost"];
