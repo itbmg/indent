@@ -6296,7 +6296,7 @@
                     }
                     else
                     {
-                       // Rate = (float)dtProduct.Rows[0]["UnitPrice"];
+                        // Rate = (float)dtProduct.Rows[0]["UnitPrice"];
                     }
                     if (BranchUnitPrice != "0")
                     {
@@ -6306,34 +6306,91 @@
                     {
                         Rate = (float)dtProduct.Rows[0]["UnitPrice"];
                     }
-                    float Unitqty = (float)dtProduct.Rows[0]["Qty"];
-                    double TotalRate = 0;
+                    //float Unitqty = (float)dtProduct.Rows[0]["Qty"];
+                    //double TotalRate = 0;
+                    //double actualrate = 0;
+                    //actualrate = Rate - discountprice;
+
+                    //TotalRate = actualrate;
+                    ////if (dtProduct.Rows[0]["Units"].ToString() == "ml")
+                    ////{
+                    ////    TotalRate = Rate;
+                    ////}
+                    ////if (dtProduct.Rows[0]["Units"].ToString() == "ltr")
+                    ////{
+                    ////    TotalRate = Rate;
+                    ////}
+                    ////if (dtProduct.Rows[0]["Units"].ToString() == "gms")
+                    ////{
+                    ////}
+                    ////if (dtProduct.Rows[0]["Units"].ToString() == "kgs")
+                    ////{
+                    ////    TotalRate = Rate;
+                    ////}
+                    //if (dtProduct.Rows[0]["Units"].ToString() == "ml" || dtProduct.Rows[0]["Units"].ToString() == "ltr")
+                    //{
+                    //    GetProduct.Desciption = "Ltrs";
+                    //}
+                    //else
+                    //{
+                    //    if (dtProduct.Rows[0]["Units"].ToString() == "Nos")
+                    //    {
+                    //        GetProduct.Desciption = "Nos";
+                    //    }
+                    //    else
+                    //    {
+                    //        GetProduct.Desciption = "Kgs";
+                    //    }
+                    //}
+                    ////getOrderValue.Rate = (float)Rate;
+                    //GetProduct.UnitPrice = TotalRate.ToString();
+                    //ProductList.Add(GetProduct);
+                    //string response = GetJson(ProductList);
+                    //context.Response.Write(response);
+
+
+
+                    double.TryParse(dtBranchProduct.Rows[0]["discountprice"].ToString(), out discountprice);
+
                     double actualrate = 0;
                     actualrate = Rate - discountprice;
 
-                    TotalRate = actualrate;
-                    //if (dtProduct.Rows[0]["Units"].ToString() == "ml")
-                    //{
-                    //    TotalRate = Rate;
-                    //}
-                    //if (dtProduct.Rows[0]["Units"].ToString() == "ltr")
-                    //{
-                    //    TotalRate = Rate;
-                    //}
-                    //if (dtProduct.Rows[0]["Units"].ToString() == "gms")
-                    //{
-                    //}
-                    //if (dtProduct.Rows[0]["Units"].ToString() == "kgs")
-                    //{
-                    //    TotalRate = Rate;
-                    //}
-                    if (dtProduct.Rows[0]["Units"].ToString() == "ml" || dtProduct.Rows[0]["Units"].ToString() == "ltr")
+                    GetProduct.orderunitRate = (float)actualrate;
+
+                    double UOMQty = 0;
+                    double.TryParse(dtBranchProduct.Rows[0]["Qty"].ToString(), out UOMQty);
+                    //perltrCost = (1000 / UOMQty) * unitprice;//commented on 03/05/2024
+                    perltrCost = (1000 / UOMQty) * actualrate;
+                    perltrCost = Math.Round(perltrCost, 2);
+                    Rate = perltrCost;
+                    //Rate = (float)dtProduct.Rows[0]["UnitPrice"];
+
+                    //float Rate = (float)dtBranchProduct.Rows[0]["UnitPrice"];
+                    float Unitqty = (float)dtBranchProduct.Rows[0]["Qty"];
+                    GetProduct.invqty = dtBranchProduct.Rows[0]["invqty"].ToString();
+                    double TotalRate = 0;
+                    if (context.Session["Permissions"].ToString() == "O")
+                    {
+                        double unitprice1 = 0;
+                        double.TryParse(dtBranchProduct.Rows[0]["UnitPrice"].ToString(), out unitprice1);
+                        double discountprice1 = 0;
+                        double.TryParse(dtBranchProduct.Rows[0]["discountprice"].ToString(), out discountprice1);
+                        double actualrate1 = 0;
+                        actualrate1 = unitprice1 - discountprice1;
+                        TotalRate = actualrate1;
+                    }
+                    else
+                    {
+                        TotalRate = Rate;
+                    }
+
+                    if (dtBranchProduct.Rows[0]["Units"].ToString() == "ml" || dtBranchProduct.Rows[0]["Units"].ToString() == "ltr")
                     {
                         GetProduct.Desciption = "Ltrs";
                     }
                     else
                     {
-                        if (dtProduct.Rows[0]["Units"].ToString() == "Nos")
+                        if (dtBranchProduct.Rows[0]["Units"].ToString() == "Nos")
                         {
                             GetProduct.Desciption = "Nos";
                         }
