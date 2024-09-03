@@ -6401,7 +6401,7 @@
                         }
                     }
                     //getOrderValue.Rate = (float)Rate;
-                    GetProduct.UnitPrice = TotalRate.ToString();
+                    GetProduct.UnitPrice = Math.Round(TotalRate, 2).ToString();
                     ProductList.Add(GetProduct);
                     string response = GetJson(ProductList);
                     context.Response.Write(response);
@@ -6411,7 +6411,9 @@
                     ProductUnit GetProduct = new ProductUnit();
                     GetProduct.Unitqty = dtBranchProduct.Rows[0]["Qty"].ToString();
                     GetProduct.Units = dtBranchProduct.Rows[0]["Units"].ToString();
-                    GetProduct.discountprice = (float)dtBranchProduct.Rows[0]["discountprice"];
+                    float discountprice = 0;
+                    float.TryParse(dtBranchProduct.Rows[0]["discountprice"].ToString(), out discountprice);
+                    GetProduct.discountprice = discountprice;
 
                     //added by akbar converting pktrate to ltrcost 27-03-2023
                     double perltrCost = 0;
@@ -6420,8 +6422,7 @@
                     double unitprice = 0;
                     double.TryParse(dtBranchProduct.Rows[0]["UnitPrice"].ToString(), out unitprice);
 
-                    double discountprice = 0;
-                    double.TryParse(dtBranchProduct.Rows[0]["discountprice"].ToString(), out discountprice);
+                    
 
                     double actualrate = 0;
                     actualrate = unitprice - discountprice;
