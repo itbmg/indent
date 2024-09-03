@@ -6369,20 +6369,21 @@
                     float Unitqty = (float)dtBranchProduct.Rows[0]["Qty"];
                     GetProduct.invqty = dtBranchProduct.Rows[0]["invqty"].ToString();
                     double TotalRate = 0;
-                    if (context.Session["Permissions"].ToString() == "O")
-                    {
-                        double unitprice1 = 0;
-                        double.TryParse(dtBranchProduct.Rows[0]["UnitPrice"].ToString(), out unitprice1);
-                        double discountprice1 = 0;
-                        double.TryParse(dtBranchProduct.Rows[0]["discountprice"].ToString(), out discountprice1);
-                        double actualrate1 = 0;
-                        actualrate1 = unitprice1 - discountprice1;
-                        TotalRate = actualrate1;
-                    }
-                    else
-                    {
-                        TotalRate = Rate;
-                    }
+                    //if (context.Session["Permissions"].ToString() == "O")
+                    //{
+                    //    double unitprice1 = 0;
+                    //    double.TryParse(dtBranchProduct.Rows[0]["UnitPrice"].ToString(), out unitprice1);
+                    //    double discountprice1 = 0;
+                    //    double.TryParse(dtBranchProduct.Rows[0]["discountprice"].ToString(), out discountprice1);
+                    //    double actualrate1 = 0;
+                    //    actualrate1 = unitprice1 - discountprice1;
+                    //    TotalRate = actualrate1;
+                    //}
+                    //else
+                    //{
+                    //    TotalRate = Rate;
+                    //}
+                    TotalRate = actualrate;
 
                     if (dtBranchProduct.Rows[0]["Units"].ToString() == "ml" || dtBranchProduct.Rows[0]["Units"].ToString() == "ltr")
                     {
