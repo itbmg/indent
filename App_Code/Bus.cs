@@ -6265,11 +6265,11 @@
                 string Sno = context.Request["ProductSno"];
                 string BranchID = context.Request["BranchID"];
                 List<ProductUnit> ProductList = new List<ProductUnit>();
-                cmd = new MySqlCommand("SELECT branchproducts.unitprice,branchproducts.discountprice, branchproducts.product_sno, productsdata.Qty,  productsdata.invqty, productsdata.Units FROM branchproducts INNER JOIN productsdata ON branchproducts.product_sno = productsdata.sno WHERE (branchproducts.branch_sno = @BranchID) and (branchproducts.product_sno=@sno) ");
+                cmd = new MySqlCommand("SELECT branchproducts.unitprice, branchproducts.discountprice,branchproducts.product_sno, productsdata.Qty,  productsdata.invqty, productsdata.Units FROM branchproducts INNER JOIN productsdata ON branchproducts.product_sno = productsdata.sno WHERE (branchproducts.branch_sno = @BranchID) and (branchproducts.product_sno=@sno) ");
                 cmd.Parameters.AddWithValue("@sno", Sno);
                 cmd.Parameters.AddWithValue("@BranchID", BranchID);
                 DataTable dtBranchProduct = vdm.SelectQuery(cmd).Tables[0];
-                string AunitPrice = "0";string Adiscountprice = "0";
+                string AunitPrice = "0"; string Adiscountprice = "0";
                 if (dtBranchProduct.Rows.Count > 0)
                 {
                     AunitPrice = dtBranchProduct.Rows[0]["unitprice"].ToString();
@@ -6282,13 +6282,14 @@
                     cmd.Parameters.AddWithValue("@BranchID", BranchID);
                     DataTable dtProduct = vdm.SelectQuery(cmd).Tables[0];
                     ProductUnit GetProduct = new ProductUnit();
+                    //GetProduct.UnitPrice = dtProduct.Rows[0]["UnitPrice"].ToString();
                     GetProduct.orderunitRate = (float)dtProduct.Rows[0]["UnitPrice"];
                     GetProduct.Unitqty = dtProduct.Rows[0]["Qty"].ToString();
                     GetProduct.Units = dtProduct.Rows[0]["Units"].ToString();
                     GetProduct.invqty = dtProduct.Rows[0]["invqty"].ToString();
                     string BranchUnitPrice = dtProduct.Rows[0]["BUnitPrice"].ToString();
                     string BDiscountPrice = dtProduct.Rows[0]["BDiscountPrice"].ToString();
-                    double Rate = 0;double discountprice = 0;
+                    double Rate = 0; double discountprice = 0;
                     double perltrCost = 0;
                     if (BDiscountPrice != "0")
                     {
@@ -6306,92 +6307,36 @@
                     {
                         Rate = (float)dtProduct.Rows[0]["UnitPrice"];
                     }
-                    //float Unitqty = (float)dtProduct.Rows[0]["Qty"];
-                    //double TotalRate = 0;
-                    //double actualrate = 0;
-                    //actualrate = Rate - discountprice;
-
-                    //TotalRate = actualrate;
-                    ////if (dtProduct.Rows[0]["Units"].ToString() == "ml")
-                    ////{
-                    ////    TotalRate = Rate;
-                    ////}
-                    ////if (dtProduct.Rows[0]["Units"].ToString() == "ltr")
-                    ////{
-                    ////    TotalRate = Rate;
-                    ////}
-                    ////if (dtProduct.Rows[0]["Units"].ToString() == "gms")
-                    ////{
-                    ////}
-                    ////if (dtProduct.Rows[0]["Units"].ToString() == "kgs")
-                    ////{
-                    ////    TotalRate = Rate;
-                    ////}
-                    //if (dtProduct.Rows[0]["Units"].ToString() == "ml" || dtProduct.Rows[0]["Units"].ToString() == "ltr")
-                    //{
-                    //    GetProduct.Desciption = "Ltrs";
-                    //}
-                    //else
-                    //{
-                    //    if (dtProduct.Rows[0]["Units"].ToString() == "Nos")
-                    //    {
-                    //        GetProduct.Desciption = "Nos";
-                    //    }
-                    //    else
-                    //    {
-                    //        GetProduct.Desciption = "Kgs";
-                    //    }
-                    //}
-                    ////getOrderValue.Rate = (float)Rate;
-                    //GetProduct.UnitPrice = TotalRate.ToString();
-                    //ProductList.Add(GetProduct);
-                    //string response = GetJson(ProductList);
-                    //context.Response.Write(response);
-
-
-
-                    double.TryParse(dtBranchProduct.Rows[0]["discountprice"].ToString(), out discountprice);
-
+                    //float Rate = (float)dtProduct.Rows[0]["UnitPrice"];
+                    float Unitqty = (float)dtProduct.Rows[0]["Qty"];
+                    //float TotalRate = 0;
+                    double TotalRate = 0;
                     double actualrate = 0;
                     actualrate = Rate - discountprice;
 
-                    GetProduct.orderunitRate = (float)actualrate;
-
-                    double UOMQty = 0;
-                    double.TryParse(dtBranchProduct.Rows[0]["Qty"].ToString(), out UOMQty);
-                    //perltrCost = (1000 / UOMQty) * unitprice;//commented on 03/05/2024
-                    perltrCost = (1000 / UOMQty) * actualrate;
-                    perltrCost = Math.Round(perltrCost, 2);
-                    Rate = perltrCost;
-                    //Rate = (float)dtProduct.Rows[0]["UnitPrice"];
-
-                    //float Rate = (float)dtBranchProduct.Rows[0]["UnitPrice"];
-                    float Unitqty = (float)dtBranchProduct.Rows[0]["Qty"];
-                    GetProduct.invqty = dtBranchProduct.Rows[0]["invqty"].ToString();
-                    double TotalRate = 0;
-                    //if (context.Session["Permissions"].ToString() == "O")
-                    //{
-                    //    double unitprice1 = 0;
-                    //    double.TryParse(dtBranchProduct.Rows[0]["UnitPrice"].ToString(), out unitprice1);
-                    //    double discountprice1 = 0;
-                    //    double.TryParse(dtBranchProduct.Rows[0]["discountprice"].ToString(), out discountprice1);
-                    //    double actualrate1 = 0;
-                    //    actualrate1 = unitprice1 - discountprice1;
-                    //    TotalRate = actualrate1;
-                    //}
-                    //else
+                    TotalRate = actualrate;
+                    //if (dtProduct.Rows[0]["Units"].ToString() == "ml")
                     //{
                     //    TotalRate = Rate;
                     //}
-                    TotalRate = actualrate;
-
-                    if (dtBranchProduct.Rows[0]["Units"].ToString() == "ml" || dtBranchProduct.Rows[0]["Units"].ToString() == "ltr")
+                    //if (dtProduct.Rows[0]["Units"].ToString() == "ltr")
+                    //{
+                    //    TotalRate = Rate;
+                    //}
+                    //if (dtProduct.Rows[0]["Units"].ToString() == "gms")
+                    //{
+                    //}
+                    //if (dtProduct.Rows[0]["Units"].ToString() == "kgs")
+                    //{
+                    //    TotalRate = Rate;
+                    //}
+                    if (dtProduct.Rows[0]["Units"].ToString() == "ml" || dtProduct.Rows[0]["Units"].ToString() == "ltr")
                     {
                         GetProduct.Desciption = "Ltrs";
                     }
                     else
                     {
-                        if (dtBranchProduct.Rows[0]["Units"].ToString() == "Nos")
+                        if (dtProduct.Rows[0]["Units"].ToString() == "Nos")
                         {
                             GetProduct.Desciption = "Nos";
                         }
@@ -6401,7 +6346,8 @@
                         }
                     }
                     //getOrderValue.Rate = (float)Rate;
-                    GetProduct.UnitPrice = Math.Round(TotalRate, 2).ToString();
+                    GetProduct.UnitPrice = TotalRate.ToString();
+                    //GetProduct.orderunitRate = (float)TotalRate; instead this line added above line
                     ProductList.Add(GetProduct);
                     string response = GetJson(ProductList);
                     context.Response.Write(response);
@@ -6413,6 +6359,7 @@
                     GetProduct.Units = dtBranchProduct.Rows[0]["Units"].ToString();
                     float discountprice = 0;
                     float.TryParse(dtBranchProduct.Rows[0]["discountprice"].ToString(), out discountprice);
+
                     GetProduct.discountprice = discountprice;
 
                     //added by akbar converting pktrate to ltrcost 27-03-2023
@@ -6422,8 +6369,7 @@
                     double unitprice = 0;
                     double.TryParse(dtBranchProduct.Rows[0]["UnitPrice"].ToString(), out unitprice);
 
-                    
-
+                   
                     double actualrate = 0;
                     actualrate = unitprice - discountprice;
 
@@ -6455,7 +6401,13 @@
                     {
                         TotalRate = Rate;
                     }
-                    
+                    //float Rate = (float)dtBranchProduct.Rows[0]["UnitPrice"]; //instead of thes line above lines are added
+                    //float Unitqty = (float)dtBranchProduct.Rows[0]["Qty"];
+                    //GetProduct.invqty = dtBranchProduct.Rows[0]["invqty"].ToString();
+                    //float TotalRate = 0;
+                    //TotalRate = Rate; 
+
+
                     if (dtBranchProduct.Rows[0]["Units"].ToString() == "ml" || dtBranchProduct.Rows[0]["Units"].ToString() == "ltr")
                     {
                         GetProduct.Desciption = "Ltrs";
@@ -6473,6 +6425,7 @@
                     }
                     //getOrderValue.Rate = (float)Rate;
                     GetProduct.UnitPrice = TotalRate.ToString();
+                    //GetProduct.orderunitRate = (float)TotalRate; instead of this line above line added
                     ProductList.Add(GetProduct);
                     string response = GetJson(ProductList);
                     context.Response.Write(response);
