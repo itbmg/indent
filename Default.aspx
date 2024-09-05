@@ -3172,9 +3172,9 @@
                /* }*/
                 getofferproducts();
                 $('#hdnIndentNo').val(IndentNo);
-                document.getElementById('txt_totqty').innerHTML = txt_totqty;
-                document.getElementById('txt_totRate').innerHTML = txt_totRate;
-                document.getElementById('txt_total').innerHTML = txt_total;
+                document.getElementById('txt_totqty').innerHTML = parseFloat(txt_totqty).toFixed(2);
+                document.getElementById('txt_totRate').innerHTML = parseFloat(txt_totRate).toFixed(2); ;
+                document.getElementById('txt_total').innerHTML = parseFloat(txt_total).toFixed(2);  ;
                 var data = { 'op': 'AddBranchProducts', 'ProductSno': ProductSno, 'Rate': UnitPrice, 'bid': bid };
                 var s = function (msg) {
                     if (msg) {
@@ -3273,9 +3273,9 @@
                 getofferproducts();
                 IndentNo = txtIndentNo;
                 $('#hdnIndent').val(IndentNo);
-                document.getElementById('txt_totqty').innerHTML = txt_totqty;
-                document.getElementById('txt_totRate').innerHTML = txt_totRate;
-                document.getElementById('txt_total').innerHTML = txt_total;
+                document.getElementById('txt_totqty').innerHTML = parseFloat(txt_totqty).toFixed(2); 
+                document.getElementById('txt_totRate').innerHTML = parseFloat(txt_totRate).toFixed(2); 
+                document.getElementById('txt_total').innerHTML = parseFloat(txt_total).toFixed(2); 
                 var data = { 'op': 'AddBranchProducts', 'ProductSno': ProductSno, 'Rate': UnitPrice, 'bid': bid };
                 var s = function (msg) {
                     if (msg) {
@@ -3619,12 +3619,12 @@
         function OrderLeftToRight(id) {
             var PrevQty = $(id).closest("tr").find('#txtPrvQty').text();
             //$(id).closest("tr").find('#txtUnitQty').val(PrevQty);
-            $(id).closest("tr").find('#txtQtypkts').val(PrevQty);
+            $(id).closest("tr").find('#txtQtypkts').val(parseFloat(PrevQty).toFixed(2));
             OrderUnitChange(PrevQty);
         }
         function DispTransferLeftToRight(id) {
             var Qty = $(id).closest("tr").find('#txtQty').text();
-            $(id).closest("tr").find('#txtDispTransferQty').val(Qty);
+            $(id).closest("tr").find('#txtDispTransferQty').val(parseFloat(Qty).toFixed(2));
         }
         function btndeliverssaveclick() {
             var BtnSave = document.getElementById('BtnSave').value;
