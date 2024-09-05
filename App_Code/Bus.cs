@@ -6315,21 +6315,33 @@
                     actualrate = Rate - discountprice;
 
                     TotalRate = actualrate;
-                    //if (dtProduct.Rows[0]["Units"].ToString() == "ml")
+
+
+                   
+
+                    //if (context.Session["Permissions"].ToString() == "O")
+                    //{
+                    double unitprice1 = 0;
+                        double.TryParse(dtProduct.Rows[0]["BUnitPrice"].ToString(), out unitprice1);
+                        double discountprice1 = 0;
+                        double.TryParse(dtProduct.Rows[0]["BDiscountPrice"].ToString(), out discountprice1);
+                        double actualrate1 = 0;
+                        actualrate = unitprice1 - discountprice1;
+                        //TotalRate = actualrate1;
+
+                        double UOMQty = 0;
+                        double.TryParse(dtProduct.Rows[0]["Qty"].ToString(), out UOMQty);
+
+                        perltrCost = (1000 / UOMQty) * actualrate;
+                        perltrCost = Math.Round(perltrCost, 2);
+                        //Rate = perltrCost;
+                    //}
+                    //else
                     //{
                     //    TotalRate = Rate;
                     //}
-                    //if (dtProduct.Rows[0]["Units"].ToString() == "ltr")
-                    //{
-                    //    TotalRate = Rate;
-                    //}
-                    //if (dtProduct.Rows[0]["Units"].ToString() == "gms")
-                    //{
-                    //}
-                    //if (dtProduct.Rows[0]["Units"].ToString() == "kgs")
-                    //{
-                    //    TotalRate = Rate;
-                    //}
+
+
                     if (dtProduct.Rows[0]["Units"].ToString() == "ml" || dtProduct.Rows[0]["Units"].ToString() == "ltr")
                     {
                         GetProduct.Desciption = "Ltrs";
@@ -6345,10 +6357,18 @@
                             GetProduct.Desciption = "Kgs";
                         }
                     }
-                    //getOrderValue.Rate = (float)Rate;
-                    GetProduct.UnitPrice = TotalRate.ToString();
-                    GetProduct.orderunitRate = (float)actualrate;
-                    //GetProduct.orderunitRate = (float)TotalRate; instead this line added above line
+                    
+                    if (context.Session["Permissions"].ToString() == "O")
+                    {
+                        GetProduct.UnitPrice = actualrate.ToString();
+                        GetProduct.orderunitRate = (float)perltrCost ;
+                    }
+                    else
+                    {
+                        GetProduct.UnitPrice = perltrCost.ToString();
+                        GetProduct.orderunitRate = (float)actualrate;
+                    }
+                    
                     ProductList.Add(GetProduct);
                     string response = GetJson(ProductList);
                     context.Response.Write(response);
